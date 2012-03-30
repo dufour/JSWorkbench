@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>JS Workbench</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="include/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="include/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="jsworkbench.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <script type="text/javascript">
+      function doRun() {
+        var script = window.editor.getSession().getValue();
+        var output = $("#output")[0];
+        output.textContent = "";
+
+        var sandbox = new Worker('include/sandbox-runner.js');
+        sandbox.addEventListener('message', function(e) {
+          var msg = e.data;
+          switch (msg.kind) {
+            case "output":
+              output.textContent += msg.value;
+              break;
+            case "result":
+              if (msg.value) {
+                output.textContent += ">>> " + msg.value;
+              }
+              sandbox.terminate();
+              break;
+            case "error":
+              output.textContent += msg.value;
+              break;
+            default:
+              alert("Unknown message: " + msg.kind);
+              break;
+          }
+        }, false);
+        sandbox.postMessage(script);
+      }
+      
+      function doClear() {
+        var output = $("#output")[0];
+        output.textContent = "";
+        window.editor.getSession().setValue("");
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">JS Workbench Demo</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container">    
+      <div class="row">
+         <h1>JavaScript Workbench</h1>
+         <p>This is work in progress. Enter some JavaScript code below and click the Run button to execute it. Note that you can use <code>print</code> and <code>println</code> to display some information in the console.</p>
+      </div>
+      
+      <div class="row">
+      <pre id="editor"></pre>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
+        <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
+      </div>
+      <hr/>
+      <div class="row">Console:<pre id="output"></pre></div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="include/jquery.js"></script>
+    <script src="include/bootstrap/js/bootstrap.js"></script>
+    <script src="include/ace/ace-noconflict.js" type="text/javascript" charset="utf-8"></script>
+    <script src="include/ace/theme-eclipse-noconflict.js" type="text/javascript" charset="utf-8"></script>
+    <script src="include/ace/mode-javascript-noconflict.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+    window.onload = function() {        
+        window.editor = ace.edit("editor");
+        window.editor.setTheme("ace/theme/eclipse");
+        window.editor.setHighlightActiveLine(false);
+    
+        var JavaScriptMode = ace.require("ace/mode/javascript").Mode;
+        window.editor.getSession().setMode(new JavaScriptMode());
+    };
+    </script>
+  </body>
+</html>
