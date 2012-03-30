@@ -11,6 +11,7 @@
     <!-- Styles -->
     <link href="include/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="include/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="include/codemirror/lib/codemirror.css">
     <link href="jsworkbench.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -20,8 +21,8 @@
     
     <script type="text/javascript">
       function doRun() {
-        var script = window.editor.getSession().getValue();
-        var output = $("#output")[0];
+        var script = window.editor.getValue();
+        var output = window.output;
         output.textContent = "";
 
         var sandbox = new Worker('include/sandbox-runner.js');
@@ -49,9 +50,9 @@
       }
       
       function doClear() {
-        var output = $("#output")[0];
-        output.textContent = "";
-        window.editor.getSession().setValue("");
+        alert("Clear");
+        window.output.textContent = "";
+        window.editor.setValue("");
       }
     </script>
   </head>
@@ -74,30 +75,36 @@
       </div>
       
       <div class="row">
-      <pre id="editor"></pre>
+          <pre id="editor"></pre>
       </div>
       <div class="row">
         <button class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
         <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
       </div>
       <hr/>
-      <div class="row">Console:<pre id="output"></pre></div>
+      <div class="row">Console:<pre id="output" class="linenums">
+First
+Second
+Third      
+      </pre></div>
     </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="include/jquery.js"></script>
     <script src="include/bootstrap/js/bootstrap.js"></script>
-    <script src="include/ace/ace-noconflict.js" type="text/javascript" charset="utf-8"></script>
-    <script src="include/ace/theme-eclipse-noconflict.js" type="text/javascript" charset="utf-8"></script>
-    <script src="include/ace/mode-javascript-noconflict.js" type="text/javascript" charset="utf-8"></script>
+    <script src="include/codemirror/lib/codemirror.js"></script>
+    <script src="include/codemirror/mode/javascript/javascript.js"></script>
     <script>
-    window.onload = function() {        
-        window.editor = ace.edit("editor");
-        window.editor.setTheme("ace/theme/eclipse");
-        window.editor.setHighlightActiveLine(false);
-    
-        var JavaScriptMode = ace.require("ace/mode/javascript").Mode;
-        window.editor.getSession().setMode(new JavaScriptMode());
+    window.onload = function() {
+        window.output = $("#output")[0];
+        var options = {
+            value: "// Enter javascript code here\nprintln(\"Hello, world!\");",
+            mode:  "javascript",
+            indentUnit: 4,       // Indent with 4 spaces
+            lineNumbers:  true,   // Show line numbers
+            matchBrackets: true
+        };
+        window.editor = CodeMirror(document.getElementById("editor"), options);
     };
     </script>
   </body>

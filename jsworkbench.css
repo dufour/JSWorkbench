@@ -8,7 +8,34 @@ body {
 }
 
 #editor {
-    position: relative;
-    height: 200px;
-    padding: 0;
+  padding: 0;
+  -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+          box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+}
+
+.CodeMirror {
+  position: relative;
+  height: 200px;
+}
+
+.CodeMirror-scroll {
+  position:  relative;
+  height: 100%;
+}
+
+.CodeMirror-gutter {
+  height: 100%;
+  background-color: transparent;
+  border: none;
+  width: 40px;
+}
+
+.CodeMirror-gutter-text {
+  background-color: transparent;
+  color: #bebec5;
+}
+
+.CodeMirror-gutter-text pre {
+  color: #9c9ca4;
 }
