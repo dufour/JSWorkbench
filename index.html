@@ -41,13 +41,14 @@
               break;
             case "error":
               output.textContent += msg.value;
+              sandbox.terminate();
               break;
             default:
-              alert("Unknown message: " + msg.kind);
+              alert("Unknown message kind: " + msg.kind);
               break;
           }
         }, false);
-        sandbox.postMessage(script);
+        sandbox.postMessage({kind: "script", value: script});
       }
       
       function doClear() {
@@ -93,7 +94,7 @@
     <script src="include/cm-autoclose.js"></script>
     <script>
     window.onload = function() {
-        window.output = $("#output")[0];
+        window.output = document.getElementById("output");
         var options = {
             value: "// Enter javascript code here\nprintln(\"Hello, world!\");",
             mode:  "javascript",
