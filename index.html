@@ -12,6 +12,7 @@
     <link href="include/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="include/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link rel="stylesheet" href="include/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="include/codemirror/theme/eclipse.css">
     <link href="jsworkbench.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -50,7 +51,6 @@
       }
       
       function doClear() {
-        alert("Clear");
         window.output.textContent = "";
         window.editor.setValue("");
       }
@@ -94,6 +94,7 @@ Third
     <script src="include/bootstrap/js/bootstrap.js"></script>
     <script src="include/codemirror/lib/codemirror.js"></script>
     <script src="include/codemirror/mode/javascript/javascript.js"></script>
+    <script src="include/cm-autoclose.js"></script>
     <script>
     window.onload = function() {
         window.output = $("#output")[0];
@@ -102,7 +103,10 @@ Third
             mode:  "javascript",
             indentUnit: 4,       // Indent with 4 spaces
             lineNumbers:  true,   // Show line numbers
-            matchBrackets: true
+            matchBrackets: true,
+            extraKeys: {
+                "Enter": function(cm) { cm.autoInsertBraces(cm)},
+            }
         };
         window.editor = CodeMirror(document.getElementById("editor"), options);
     };

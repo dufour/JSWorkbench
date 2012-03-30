@@ -39,3 +39,11 @@ body {
 .CodeMirror-gutter-text pre {
   color: #9c9ca4;
 }
+
+.CodeMirror-matchingbracket {
+  color: #46a546 !important; /* Bootstrap accent - green */
+}
+
+.CodeMirror-nonmatchingbracket {
+  color: #f89406 !important; /* Bootstrap accent - orange */    
+}
