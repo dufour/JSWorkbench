@@ -101,6 +101,11 @@
           window.editor = createCodeEditor(document.getElementById("editor"));
           window.repl   = createREPL(document.getElementById("repl"));
           window.output = document.getElementById("output");
+          
+          $(window.output).click(function() {
+              CodeMirror.commands.goDocEnd(window.repl);
+              window.repl.focus();
+          });
       });
     </script>
   </body>
