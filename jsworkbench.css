@@ -21,6 +21,12 @@ body {
   border-left: 1px solid #DDD;
   border-right: 1px solid #DDD;
   border-bottom: 1px solid #DDD; 
+  
+  margin-bottom: 9px;
+}
+
+#repl CodeMirror {
+  height: 1.5em;
 }
 
 .nav-tabs button.close {
@@ -30,7 +36,8 @@ body {
   padding: 0;
 }
 
-#editor, #repl {
+#editor {
+  /* Emulate Bootstrap <pre> formatting for CodeMirror editors */
   padding: 0;
   -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
      -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
@@ -71,8 +78,44 @@ body {
   color: #f89406 !important; /* Bootstrap accent - orange */    
 }
 
+#repl {
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+/* REPL should be 1 line high */
+#repl .CodeMirror {
+  height: 18px;
+  padding: 0;
+  margin: 0;
+}
+
+#repl .CodeMirror-lines {
+  padding: 0;
+  margin: 0;
+}
+
+/* Disable scrolling in REPL */
+#repl .CodeMirror-scroll {
+  height: auto;
+  overflow: visible;
+}
+
+/* Use a block cursor in REPL to differentiate from normal editors */
 #repl .CodeMirror-cursor {
   width: 1.2ex;
   background-color: black;
   border: none;
+}
+
+#output ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+#output li {
+/*  background: */
 }

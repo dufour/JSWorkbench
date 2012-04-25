@@ -50,11 +50,20 @@ function createREPL(node) {
         value: "> ",
         mode:  "javascript",
         indentUnit: 0,       // Indent with 4 spaces
-        lineNumbers:  true,   // Show line numbers
+        lineNumbers:  false,   // Show line numbers
 //        matchBrackets: true,
         extraKeys: {
-//            "Enter": function(cm) { return true; },
-//            "Backspace": function(cm) { return true; },
+            "Enter": function(cm) {
+                var script = cm.getValue().substring(2);                
+                var line = document.createTextNode(cm.getValue() + "\n");
+                window.output.appendChild(line);
+//                var result = eval(script);
+//                window.output.appendChild(document.createTextNode("=> " + result + "\n"));
+                cm.setValue("> ");
+                CodeMirror.commands.goDocEnd(cm);
+                return true;
+            },
+            "Backspace": function(cm) { if (cm.getValue().length() <= 2) return true; },
         },
         
         onKeyEvent: repl_onKeyEvent,

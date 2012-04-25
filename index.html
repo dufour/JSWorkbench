@@ -25,37 +25,11 @@
       function doRun() {
         var script = window.editor.getValue();
         alert("The warp drives are offline at the moment...");
-//        var output = window.output;
-//        output.textContent = "";
-
-//        var sandbox = new Worker('include/sandbox-runner.js');
-//        sandbox.addEventListener('message', function(e) {
-//          var msg = e.data;
-//          switch (msg.kind) {
-//            case "output":
-//              output.textContent += msg.value;
-//              break;
-//            case "result":
-//              if (msg.value) {
-//                output.textContent += ">>> " + msg.value;
-//              }
-//              sandbox.terminate();
-//              break;
-//            case "error":
-//              output.textContent += msg.value;
-//              sandbox.terminate();
-//              break;
-//            default:
-//              alert("Unknown message kind: " + msg.kind);
-//              break;
-//          }
-//        }, false);
-//        sandbox.postMessage({kind: "script", value: script});
       }
       
       function doClear() {
-//        window.output.textContent = "";
         window.editor.setValue("");
+        window.output.innerText = "";
       }
     </script>
   </head>
@@ -81,8 +55,8 @@
       
       <div class="row">
           <ul id="editor-tabs" class="nav nav-tabs">
-            <li class="active"><a href="#">untitled<button class="close">&times;</button></a></li>
-            <li><a href="#">untitled2<button class="close">&times;</button></a></li>
+            <li class="active"><a href="#untitled" data-toggle="tab">untitled<button class="close">&times;</button></a></li>
+            <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>
           </ul>
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
@@ -92,7 +66,10 @@
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
               <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
             </div>
-            <pre id="editor"></pre>
+            <div class="tab-content">
+              <div class="tab-pane active" id="untitled"><pre id="editor"></pre></div>
+              <div class="tab-pane" id="untitled2"><pre>Hello</pre></div>
+            </div>
           </div>
       </div>
       
@@ -104,23 +81,27 @@
       <hr/>
       
       <!-- Console -->
-      <div class="row">Console:<pre id="repl" class="linenums"></pre></div>
+      <div class="row">Console:        
+        <pre id="repl"><div id="output"><ul><li>var x = 4;</li><li>x + 2</li><li>=> 6</li></ul></div></pre>
+      </div>
     </div>
 
     <!-- Imports (importing at the end makes the page load faster) -->
     <script src="include/jquery.js"></script>
     <script src="include/bootstrap/js/bootstrap.js"></script>
+    <script src="include/bootstrap/js/bootstrap-tab.js"></script>
     <script src="include/codemirror/lib/codemirror.js"></script>
     <script src="include/codemirror/mode/javascript/javascript.js"></script>
     <script src="include/cm-autoclose.js"></script>
     
     <script src="include/actions.js"></script>
     <script src="include/editors.js"></script>
-    <script>
-    window.onload = function() {
-        window.editor = createCodeEditor(document.getElementById("editor"));
-        window.repl   = createREPL(document.getElementById("repl"));
-    };
+    <script>    
+      $(document).ready(function() {
+          window.editor = createCodeEditor(document.getElementById("editor"));
+          window.repl   = createREPL(document.getElementById("repl"));
+          window.output = document.getElementById("output");
+      });
     </script>
   </body>
 </html>
