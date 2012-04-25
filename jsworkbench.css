@@ -86,7 +86,7 @@ body {
 
 /* REPL should be 1 line high */
 #repl .CodeMirror {
-  height: 14px;
+  height: 12px;
   padding: 0;
   margin: 0;
   
