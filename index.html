@@ -31,6 +31,11 @@
         window.editor.setValue("");
         window.output.innerText = "";
       }
+      
+      function focusREPL() {
+          CodeMirror.commands.goDocEnd(window.repl);
+          window.repl.focus();
+      }
     </script>
   </head>
 
@@ -82,7 +87,7 @@
       
       <!-- Console -->
       <div class="row">Console:        
-        <pre id="repl"><div id="output"><ul><li>var x = 4;</li><li>x + 2</li><li>=> 6</li></ul></div></pre>
+        <pre id="repl"><div id="output"></div></pre>
       </div>
     </div>
 
@@ -102,10 +107,7 @@
           window.repl   = createREPL(document.getElementById("repl"));
           window.output = document.getElementById("output");
           
-          $(window.output).click(function() {
-              CodeMirror.commands.goDocEnd(window.repl);
-              window.repl.focus();
-          });
+          $("#repl").click(focusREPL);
       });
     </script>
   </body>

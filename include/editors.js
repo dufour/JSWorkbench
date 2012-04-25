@@ -7,10 +7,7 @@ function createCodeEditor(node) {
         matchBrackets: true,
         extraKeys: {
             "Enter": function(cm) { cm.autoInsertBraces(cm)},
-//            "Cmd-S": function(cm) { jswb_doSave(cm); return true; },
-//            "Cmd-O": function(cm) { jswb_doLoad(cm); return true; },
-//            "Cmd-Z": function(cm) { jswb_undo(cm); return true; },
-//            "Shift-Cmd-Z": function(cm) { jswb_redo(cm); return true; },
+            "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Shift-Cmd-S": function(cm) { jswb_saveProject(cm); return true; },
             "Shift-Cmd-O": function(cm) { jswb_loadProject(cm); return true; },
         }
@@ -19,54 +16,27 @@ function createCodeEditor(node) {
     var editor = CodeMirror(node, options);
     editor.save = jswb_save;
     return editor;
-//    return new CodeMirrorUI(node, {
-//        path: "include/codemirror-ui/js/",
-//        buttons: [
-//            'undo',
-//            'redo',
-//            'jump',
-//            'reindent'
-//            'about'
-//        ]
-//    }, options);
 }
 
 // ================================================================================
 //                                       REPL
 // ================================================================================
 
-function repl_onKeyEvent(cm, event) {
-    if (cm.somethingSelected()) {
-        event.stop();
-        return true;
-    }
-    
-//    } else if (event.
-    return false;
-}
-
 function createREPL(node) {
     var options = {
-        value: "> ",
         mode:  "javascript",
-        indentUnit: 0,       // Indent with 4 spaces
+        indentUnit: 4,         // Indent by 4 spaces
         lineNumbers:  false,   // Show line numbers
-//        matchBrackets: true,
+        matchBrackets: true,
         extraKeys: {
+            "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
-                var script = cm.getValue().substring(2);                
-                var line = document.createTextNode(cm.getValue() + "\n");
-                window.output.appendChild(line);
-//                var result = eval(script);
-//                window.output.appendChild(document.createTextNode("=> " + result + "\n"));
-                cm.setValue("> ");
-                CodeMirror.commands.goDocEnd(cm);
+                var script = cm.getValue();                           
+                $(window.output).append($("<span/>").addClass("console-line").text(script), "\n");
+                cm.setValue("");
                 return true;
             },
-            "Backspace": function(cm) { if (cm.getValue().length() <= 2) return true; },
         },
-        
-        onKeyEvent: repl_onKeyEvent,
     };
     return CodeMirror(node, options);
 }

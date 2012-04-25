@@ -86,9 +86,12 @@ body {
 
 /* REPL should be 1 line high */
 #repl .CodeMirror {
-  height: 18px;
+  height: 14px;
   padding: 0;
   margin: 0;
+  
+  background: url("icons/icon-prompt-active.png") no-repeat 0 center;
+  padding-left: 14px;
 }
 
 #repl .CodeMirror-lines {
@@ -109,13 +112,7 @@ body {
   border: none;
 }
 
-#output ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-
-#output li {
-/*  background: */
+.console-line {
+  background: url("icons/icon-prompt-inactive.png") no-repeat 0 center;
+  padding-left: 14px;
 }
