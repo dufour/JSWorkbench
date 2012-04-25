@@ -7,7 +7,30 @@ body {
   border: 1px solid #aaa;
 }
 
-#editor {
+#editor-tabs {
+  margin-bottom: 0;
+}
+
+#editor-toolbar {
+  margin-bottom: 7px;
+}
+
+#main-editor-area {
+  padding: 7px 18px;
+  
+  border-left: 1px solid #DDD;
+  border-right: 1px solid #DDD;
+  border-bottom: 1px solid #DDD; 
+}
+
+.nav-tabs button.close {
+  border: none;
+  background-color: transparent;
+  margin: -3px 0 0 3px;
+  padding: 0;
+}
+
+#editor, #repl {
   padding: 0;
   -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
      -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
@@ -46,4 +69,10 @@ body {
 
 .CodeMirror-nonmatchingbracket {
   color: #f89406 !important; /* Bootstrap accent - orange */    
+}
+
+#repl .CodeMirror-cursor {
+  width: 1.2ex;
+  background-color: black;
+  border: none;
 }
