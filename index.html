@@ -86,6 +86,11 @@
               };              
           })(id));
           var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(title).append(close_button);
+          link.on('shown', (function (tabID) {
+              return function (event) {
+                  window.currentEditor = tabID;
+              };
+          })(id));
           var tab_item = $("<li/>").attr("id", "tabitem_" + id).append(link);
           $("#editor-tabs").append(tab_item);          
           
@@ -179,6 +184,7 @@
           
           window.next_editor_id = 0;
           window.editors = [];
+          window.currentEditor = undefined;
           
           jswb_newTab();
           
