@@ -113,6 +113,6 @@ body {
 }
 
 .console-line {
-  background: url("icons/icon-prompt-inactive.png") no-repeat 0 2px;
+  background: url("icons/icon-prompt-inactive.png") no-repeat 0 3px;
   padding-left: 14px;
 }

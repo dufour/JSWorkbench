@@ -7,7 +7,8 @@ $(document).ready(function() {
 });
 
 function jswb_runScript(s) {
-    return eval(s); // FIXME: insecure!
+    var _eval = eval; // Use indirect eval to simulate top-level execution
+    return _eval(s);  // FIXME: insecure!
 }
 
 function jswb_clearConsole() {
