@@ -33,14 +33,47 @@
           window.repl.focus();
       }
       
+      function jswb_closeTab(id) {
+          // Remove tab
+          var current_tab = $("#tabitem_" + id);
+          var prev_tab = current_tab.prev();
+          if (prev_tab.length === 0) {
+              // no prev tab, use the next one
+              prev_tab = current_tab.next();
+          }
+          if (prev_tab.length !== 0) {
+              // Activate this tab
+              var prev_tab_id = prev_tab.children('a').tab('show');
+          }
+          current_tab.remove();          
+          
+          // Remove content
+          $("#" + id).remove();
+          
+          if ($("#editor-tabs").children("li").length === 0) {
+              // If no tabs remain, create a new one
+              jswb_newTab();
+          }
+          
+      }
+      
       function jswb_newTab() {
           var id = window.next_editor_id++;
           var title = "new_tab";
           
           // Create tab
           // <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>
-          var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(title).append('<button class="close">&times;</button>');
-          $("#editor-tabs").append($("<li/>").append(link));          
+          var close_button = $("<button/>").addClass("close").append("&times;");
+          close_button.click((function (tabID) {
+              return function (event) {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  jswb_closeTab(tabID);
+              };              
+          })(id));
+          var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(title).append(close_button);
+          var tab_item = $("<li/>").attr("id", "tabitem_" + id).append(link);
+          $("#editor-tabs").append(tab_item);          
           
           // Create content
           // <div class="tab-pane" id="untitled2"><pre class="editor">Hello</pre></div>
@@ -57,6 +90,8 @@
           // Activate new tab          
           $("#tab_" + id).tab("show");
           editor.refresh();
+          
+          return id;
       }
     </script>
   </head>
