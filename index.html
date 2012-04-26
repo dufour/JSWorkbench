@@ -22,7 +22,17 @@
     
     <script type="text/javascript">
       function doRun() {
-          alert("The warp drives are offline at the moment...");
+          for (var i = 0; i < window.editors.length; i++) {
+              var ed = window.editors[i];
+              if (ed) {
+                  try {
+                      jswb_runScript(ed.getValue());
+                  } catch (e) {
+                      alert("" + e);
+                      break;
+                  }
+              }
+          }
       }
       
       function doClear() {
@@ -57,6 +67,8 @@
               jswb_newTab();
           }
           
+          // Deregister editor
+          delete window.editors[id];
       }
       
       function jswb_newTab() {
@@ -166,7 +178,7 @@
           window.fileInput = document.getElementById("fileInput");
           
           window.next_editor_id = 0;
-          window.editors = {};
+          window.editors = [];
           
           jswb_newTab();
           
