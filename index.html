@@ -36,16 +36,18 @@
       function jswb_closeTab(id) {
           // Remove tab
           var current_tab = $("#tabitem_" + id);
-          var prev_tab = current_tab.prev();
-          if (prev_tab.length === 0) {
-              // no prev tab, use the next one
-              prev_tab = current_tab.next();
+          if (current_tab.hasClass("active")) {
+              var prev_tab = current_tab.prev();
+              if (prev_tab.length === 0) {
+                  // no prev tab, use the next one
+                  prev_tab = current_tab.next();
+              }
+              if (prev_tab.length !== 0) {
+                  // Activate this tab
+                  prev_tab.children('a').tab('show');
+              }
           }
-          if (prev_tab.length !== 0) {
-              // Activate this tab
-              var prev_tab_id = prev_tab.children('a').tab('show');
-          }
-          current_tab.remove();          
+          current_tab.remove();
           
           // Remove content
           $("#" + id).remove();
