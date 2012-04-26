@@ -6,6 +6,28 @@ $(document).ready(function() {
     }
 });
 
+function jswb_runScript(s) {
+    return eval(s); // FIXME: insecure!
+}
+
+function jswb_clearConsole() {
+    window.output.innerText = "";
+    window.repl.setValue("");
+}
+
+function jswb_loadFile(cm, f) {
+    var reader = new FileReader();
+    reader.onerror = function (e) {
+          alert("File read failed");
+    };
+    reader.onload = (function(theEditor) {
+        return function(e) {
+            theEditor.setValue(e.target.result);
+       };
+    })(cm);
+    reader.readAsText(f);
+}
+
 function jswb_undo(cm) {
     cm.undo();
 }
@@ -19,7 +41,7 @@ function jswb_save(cm) {
 }
 
 function jswb_load(cm) {
-    alert("Would load...");
+    window.fileInput.click();
 }
 
 function jswb_saveProject(cm) {

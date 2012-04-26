@@ -64,7 +64,7 @@
           </ul>
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
-              <a class="btn" href="#">Open...</a>
+              <a class="btn" href="#" onclick="window.fileInput.click()">Open...</a>
               <a class="btn" href="#">Save...</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
@@ -105,9 +105,13 @@
           window.editor = createCodeEditor(document.getElementById("editor"));
           window.repl   = createREPL(document.getElementById("repl"));
           window.output = document.getElementById("output");
+          window.fileInput = document.getElementById("fileInput");
           
           $("#repl").click(focusREPL);
       });
     </script>
+    
+    <!-- Hidden file input to load files into editors -->
+    <input type="file" id="fileInput" accept="*" style="display: none;" onchange="jswb_loadFile(window.editor, this.files[0])">
   </body>
 </html>
