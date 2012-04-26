@@ -12,7 +12,7 @@ function jswb_runScript(s) {
 }
 
 function jswb_clearConsole() {
-    window.output.innerText = "";
+    $(window.output).empty();
     window.repl.setValue("");
 }
 
