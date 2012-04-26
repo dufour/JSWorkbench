@@ -13,7 +13,6 @@
     <link href="include/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link rel="stylesheet" href="include/codemirror/lib/codemirror.css">
     <link rel="stylesheet" href="include/codemirror/theme/eclipse.css">
-    <!-- <link rel="stylesheet" href="include/codemirror-ui/css/codemirror-ui.css" type="text/css" media="screen"/> -->
     <link href="jsworkbench.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -23,17 +22,41 @@
     
     <script type="text/javascript">
       function doRun() {
-        var script = window.editor.getValue();
-        alert("The warp drives are offline at the moment...");
+          alert("The warp drives are offline at the moment...");
       }
       
       function doClear() {
-        window.editor.setValue("");
-        window.output.innerText = "";
+          jswb_clearConsole();
       }
       
       function focusREPL() {
           window.repl.focus();
+      }
+      
+      function jswb_newTab() {
+          var id = window.next_editor_id++;
+          var title = "new_tab";
+          
+          // Create tab
+          // <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>
+          var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(title).append('<button class="close">&times;</button>');
+          $("#editor-tabs").append($("<li/>").append(link));          
+          
+          // Create content
+          // <div class="tab-pane" id="untitled2"><pre class="editor">Hello</pre></div>
+          var pre = document.createElement('pre');
+          pre.setAttribute("class", "editor");
+          
+          var content = $("<div/>").addClass("tab-pane").attr("id", id).append($(pre));
+          $("#editors").append(content);          
+          
+          // Create and register editor
+          var editor = createCodeEditor(pre);
+          window.editors[id] = editor;          
+          
+          // Activate new tab          
+          $("#tab_" + id).tab("show");
+          editor.refresh();
       }
     </script>
   </head>
@@ -57,22 +80,27 @@
          <p>This is work in progress. Enter some JavaScript code below and click the Run button to execute it. Note that you can use <code>print</code> and <code>println</code> to display some information in the console.</p>
       </div>
       
+      <!-- Main area (editors) -->
       <div class="row">
+          <!-- Tab bar -->
           <ul id="editor-tabs" class="nav nav-tabs">
-            <li class="active"><a href="#untitled" data-toggle="tab">untitled<button class="close">&times;</button></a></li>
-            <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>
+            <!-- <li class="active"><a href="#untitled" data-toggle="tab">untitled<button class="close">&times;</button></a></li>
+            <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>-->
           </ul>
+          <!-- Toolbar -->
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
-              <a class="btn" href="#" onclick="window.fileInput.click()">Open...</a>
+              <a class="btn" href="#" onclick="jswb_newTab();">New</a>
+              <a class="btn" href="#" onclick="window.fileInput.click();">Open...</a>
               <a class="btn" href="#">Save...</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
               <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
             </div>
-            <div class="tab-content">
-              <div class="tab-pane active" id="untitled"><pre id="editor"></pre></div>
-              <div class="tab-pane" id="untitled2"><pre>Hello</pre></div>
+            <!-- Editors -->
+            <div id="editors" class="tab-content">
+              <!-- <div class="tab-pane active" id="untitled"><pre id="untitled1" class="editor"></pre></div>
+              <div class="tab-pane" id="untitled2"><pre>Hello</pre></div> -->
             </div>
           </div>
       </div>
@@ -102,10 +130,14 @@
     <script src="include/editors.js"></script>
     <script>    
       $(document).ready(function() {
-          window.editor = createCodeEditor(document.getElementById("editor"));
           window.repl   = createREPL(document.getElementById("repl"));
           window.output = document.getElementById("output");
           window.fileInput = document.getElementById("fileInput");
+          
+          window.next_editor_id = 0;
+          window.editors = {};
+          
+          jswb_newTab();
           
           $("#repl").click(focusREPL);
       });
