@@ -64,7 +64,7 @@
           var title = "new_tab";
           
           // Create tab
-          // <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>
+          // <li><a href="#untitled"data-toggle="tab">untitled<button class="close">&times;</button></a></li>
           var close_button = $("<button/>").addClass("close").append("&times;");
           close_button.click((function (tabID) {
               return function (event) {
@@ -78,7 +78,7 @@
           $("#editor-tabs").append(tab_item);          
           
           // Create content
-          // <div class="tab-pane" id="untitled2"><pre class="editor">Hello</pre></div>
+          // <div class="tab-pane" id="untitled"><pre class="editor">Hello</pre></div>
           var pre = document.createElement('pre');
           pre.setAttribute("class", "editor");
           
@@ -120,10 +120,7 @@
       <!-- Main area (editors) -->
       <div class="row">
           <!-- Tab bar -->
-          <ul id="editor-tabs" class="nav nav-tabs">
-            <!-- <li class="active"><a href="#untitled" data-toggle="tab">untitled<button class="close">&times;</button></a></li>
-            <li><a href="#untitled2"data-toggle="tab">untitled2<button class="close">&times;</button></a></li>-->
-          </ul>
+          <ul id="editor-tabs" class="nav nav-tabs"></ul>          
           <!-- Toolbar -->
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
@@ -135,10 +132,7 @@
               <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
             </div>
             <!-- Editors -->
-            <div id="editors" class="tab-content">
-              <!-- <div class="tab-pane active" id="untitled"><pre id="untitled1" class="editor"></pre></div>
-              <div class="tab-pane" id="untitled2"><pre>Hello</pre></div> -->
-            </div>
+            <div id="editors" class="tab-content"></div>
           </div>
       </div>
       
