@@ -54,9 +54,9 @@ function createREPL(node) {
                 if (script) {
                     try {
                         var result = jswb_runScript(script);
-                        $(window.output).append("=> " + result + "\n");
+                        $(window.output).append($("<span/>").addClass("console-result").text("=> " + result), "\n");
                     } catch (error) {
-                        $(window.output).append(error + "\n");
+                        $(window.output).append($("<span/>").addClass("console-error").text(error), "\n");
                     }
                 }
                 cm.setValue("");
