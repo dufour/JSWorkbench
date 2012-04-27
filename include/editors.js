@@ -54,7 +54,7 @@ function createREPL(node) {
                 if (script) {
                     try {
                         var result = jswb_runScript(script);
-                        $(window.output).append($("<span/>").addClass("console-result").text("=> " + result), "\n");
+                        $(window.output).append($("<span/>").addClass("console-result").text(result), "\n");
                     } catch (error) {
                         $(window.output).append($("<span/>").addClass("console-error label label-important").text(error), "\n");
                     }
