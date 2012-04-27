@@ -21,6 +21,10 @@
     <![endif]-->
     
     <script type="text/javascript">
+      function doOpen() {          
+          window.fileInput.click();
+      }
+      
       function doRun() {
           for (var i = 0; i < window.editors.length; i++) {
               var ed = window.editors[i];
@@ -62,18 +66,25 @@
           // Remove content
           $("#" + id).remove();
           
+          // Deregister editor
+          delete window.editors[id];
+          
           if ($("#editor-tabs").children("li").length === 0) {
               // If no tabs remain, create a new one
               jswb_newTab();
           }
-          
-          // Deregister editor
-          delete window.editors[id];
+      }
+      
+      function jswb_internal_nextTabID() {
+         var editors = window.editors;
+         var i = 1;
+         while (editors[i]) i++;
+         return i;
       }
       
       function jswb_newTab() {
-          var id = window.next_editor_id++;
-          var title = "new_tab";
+          var id = jswb_internal_nextTabID();
+          var title = "untitled" + id;
           
           // Create tab
           // <li><a href="#untitled"data-toggle="tab">untitled<button class="close">&times;</button></a></li>
@@ -142,7 +153,7 @@
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
               <a class="btn" href="#" onclick="jswb_newTab();">New</a>
-              <a class="btn" href="#" onclick="window.fileInput.click();">Open...</a>
+              <a class="btn" href="#" onclick="doOpen();">Open...</a>
               <a class="btn" href="#">Save...</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
@@ -182,7 +193,6 @@
           window.output = document.getElementById("output");
           window.fileInput = document.getElementById("fileInput");
           
-          window.next_editor_id = 0;
           window.editors = [];
           window.currentEditor = undefined;
           
@@ -193,6 +203,6 @@
     </script>
     
     <!-- Hidden file input to load files into editors -->
-    <input type="file" id="fileInput" accept="*" style="display: none;" onchange="jswb_loadFile(window.editor, this.files[0])">
+    <input type="file" id="fileInput" accept="*" style="display: none;" onchange="jswb_loadFile(window.editors[window.currentEditor], this.files[0])">
   </body>
 </html>
