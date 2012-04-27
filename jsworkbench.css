@@ -116,3 +116,9 @@ body {
   background: url("icons/icon-prompt-inactive.png") no-repeat 0 3px;
   padding-left: 14px;
 }
+
+.console-error {
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: 14px;
+}

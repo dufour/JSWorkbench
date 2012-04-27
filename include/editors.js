@@ -56,7 +56,7 @@ function createREPL(node) {
                         var result = jswb_runScript(script);
                         $(window.output).append($("<span/>").addClass("console-result").text("=> " + result), "\n");
                     } catch (error) {
-                        $(window.output).append($("<span/>").addClass("console-error").text(error), "\n");
+                        $(window.output).append($("<span/>").addClass("console-error label label-important").text(error), "\n");
                     }
                 }
                 cm.setValue("");
