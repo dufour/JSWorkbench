@@ -30,10 +30,7 @@ body {
 }
 
 .nav-tabs button.close {
-  border: none;
-  background-color: transparent;
   margin: -3px 0 0 3px;
-  padding: 0;
 }
 
 .editor {
