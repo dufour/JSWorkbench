@@ -49,17 +49,22 @@ function createREPL(node) {
             "Ctrl-L": function (cm) { jswb_clearConsole(); },
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
-                var script = cm.getValue();                           
-                $(window.output).append($("<span/>").addClass("console-line").text(script), "\n");
+                var script = cm.getValue();
+                cm.setValue("");
+                cm.refresh();                           
+                
+                jswb_addLineToConsole(script, "console-line");
                 if (script) {
                     try {
                         var result = jswb_runScript(script);
-                        $(window.output).append($("<span/>").addClass("console-result").text(result), "\n");
+                        if (result !== undefined) {
+                            jswb_addLineToConsole(result, "console-result");
+                        }
                     } catch (error) {
-                        $(window.output).append($("<span/>").addClass("console-error label label-important").text(error), "\n");
+                        jswb_addLineToConsole(error, "console-error label label-important");
                     }
                 }
-                cm.setValue("");
+                
                 return true;
             },
         },
