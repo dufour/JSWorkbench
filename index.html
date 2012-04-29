@@ -21,6 +21,23 @@
     <![endif]-->
     
     <script type="text/javascript">
+      function checkBrowserFeatures() {
+        var featuresOK;
+        
+        featuresOK = (window.FileReader !== undefined);
+        
+        if (featuresOK) {
+            $("#browserStatus").addClass("badge-success");
+            $("#browserStatusMsg").text("All features supported");
+            $("#browserStatusIcon").addClass("icon-ok");
+        } else {
+            $("#browserStatus").addClass("badge-error");
+            $("#browserStatusMsg").text("Some features are missing");
+            $("#browserStatusIcon").addClass("icon-exclamation-sign");
+        }
+        $('#browserStatusMsg').hide();
+      }
+    
       function doOpen() {          
           window.fileInput.click();
       }
@@ -132,6 +149,9 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="#">JS Workbench Demo</a>
+          <ul class="nav pull-right">
+            <li class="menuBadge"><span id="browserStatus" class="badge" onmouseover="$('#browserStatusMsg').show();" onmouseout="$('#browserStatusMsg').hide();"><i id="browserStatusIcon" class="icon-white"></i> <span id="browserStatusMsg"></span></span></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -189,6 +209,8 @@
     <script src="include/editors.js"></script>
     <script>    
       $(document).ready(function() {
+          checkBrowserFeatures();
+          
           window.repl   = createREPL(document.getElementById("repl"));
           window.output = document.getElementById("output");
           window.fileInput = document.getElementById("fileInput");
