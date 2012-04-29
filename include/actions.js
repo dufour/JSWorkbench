@@ -6,6 +6,27 @@ $(document).ready(function() {
     }
 });
 
+function jswb_addAlert(text, title, kind) {
+    var alertDiv = $("<div/>").addClass("alert");
+    if (kind) alertDiv.addClass("alert-" + kind);
+    alertDiv.text(text);
+    if (title) {
+        alertDiv.prepend($("<strong/>").text(title), " ");
+    }
+    alertDiv.prepend('<button class="close" data-dismiss="alert">&times;</button>');
+    $(window.alerts).append(alertDiv);
+}
+
+function jswb_reportError(text, title) {
+    if (title === undefined) title = "Error!";
+    jswb_addAlert(text, title, "error"); 
+}
+
+function jswb_reportWarning(text, title) {
+    if (title === undefined) title = "Warning!";
+    jswb_addAlert(text, title); 
+}
+
 function jswb_addLineToConsole(line, cssClass) {
     if (window.currentConsoleLine) {
         window.currentConsoleLine = undefined;
@@ -30,7 +51,7 @@ function jswb_loadFile(cm, f) {
     
     var reader = new FileReader();
     reader.onerror = function (e) {
-          alert("File read failed");
+          jswb_reportError("File read failed");
     };
     reader.onload = (function(theEditor) {
         return function(e) {
