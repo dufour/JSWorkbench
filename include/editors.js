@@ -56,7 +56,9 @@ function createREPL(node) {
                 jswb_addLineToConsole(script, "console-line");
                 if (script) {
                     try {
+                        cm.busy = true;
                         var result = jswb_runScript(script);
+                        cm.busy = false;
                         if (result !== undefined) {
                             jswb_addLineToConsole(result, "console-result");
                         }
@@ -68,6 +70,14 @@ function createREPL(node) {
                 return true;
             },
         },
+        onKeyEvent: function (cm, event) {
+            if (cm.busy) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        },
     };
-    return CodeMirror(node, options);
+    var editor = CodeMirror(node, options);
+    editor.busy = false;
+    return editor;
 }
