@@ -43,6 +43,7 @@
       }
       
       function doRun() {
+          $("#btn-run").removeClass("btn-primary").addClass("btn-danger").text("Stop");
           for (var i = 0; i < window.editors.length; i++) {
               var ed = window.editors[i];
               if (ed) {
@@ -54,6 +55,7 @@
                   }
               }
           }
+          $("#btn-run").removeClass("btn-danger").addClass("btn-primary").text("Run");
       }
       
       function doClear() {
@@ -189,7 +191,7 @@
       
       <!-- Buttons -->
       <div class="row">
-        <button class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
+        <button id="btn-run" class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
         <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
       </div>
       <hr/>
