@@ -49,23 +49,34 @@
     
       <!-- Header --> 
       <div class="row">
-         <h1>JavaScript Workbench</h1>
+        <div class="span12">
          <p>This is work in progress. Enter some JavaScript code below and click the Run button to execute it. Note that you can use <code>print</code> and <code>println</code> to display some information in the console.</p>
+        </div>
       </div>
       
       <!-- Placeholder for errors, warnings, etc -->
       <div id="alerts" class="row"></div>
       
+      <div class="row">
+        <div class="span12">
+          <div id="main-toolbar" class="btn-group">
+            <a class="btn" href="#" onclick="jswb_loadSession();">Restore session</a>
+            <a class="btn" href="#" onclick="jswb_saveSession();">Save session</a>
+          </div>
+        </div>
+      </div>
+      
       <!-- Main area (editors) -->
       <div class="row">
+        <div class="span12">
           <!-- Tab bar -->
           <ul id="editor-tabs" class="nav nav-tabs"></ul>          
           <!-- Toolbar -->
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
               <a class="btn" href="#" onclick="jswb_newTab();">New</a>
-              <a class="btn" href="#" onclick="jswb_loadSession();">Open</a>
-              <a class="btn" href="#" onclick="jswb_saveSession();">Save</a>
+              <a class="btn" href="#">Open</a>
+              <a class="btn" href="#">Save</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
               <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
@@ -73,19 +84,23 @@
             <!-- Editors -->
             <div id="editors" class="tab-content"></div>
           </div>
+        </div>
       </div>
       
       <!-- Buttons -->
       <div class="row">
-        <button id="btn-run" class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
-        <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
-        <button class="btn btn-large" onclick="$('#myModal').modal('show');">Modal</button>
+        <div class="span12">
+          <button id="btn-run" class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
+          <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
+        </div>
       </div>
       <hr/>
       
       <!-- Console -->
-      <div class="row">Console:        
-        <pre id="repl"><div id="output"></div></pre>
+      <div class="row">
+        <div class="span12">Console:        
+          <pre id="repl"><div id="output"></div></pre>
+        </div>
       </div>
     </div>
 

@@ -11,6 +11,10 @@ body {
   margin-bottom: 0;
 }
 
+#main-toolbar {
+  margin-bottom: 15px;
+}
+
 #editor-toolbar {
   margin-bottom: 7px;
 }
