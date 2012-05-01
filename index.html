@@ -76,7 +76,7 @@
             <div id="editor-toolbar"class="btn-group">
               <a class="btn" href="#" onclick="jswb_newTab();">New</a>
               <a class="btn" href="#">Open</a>
-              <a class="btn" href="#">Save</a>
+              <a class="btn" href="#" onclick="doSave();">Save</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
               <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
@@ -110,6 +110,9 @@
     <script src="include/codemirror/lib/codemirror.js"></script>
     <script src="include/codemirror/mode/javascript/javascript.js"></script>
     <script src="include/cm-autoclose.js"></script>
+    
+    <script src="include/polyfills/BlobBuilder.js"></script>
+    <script src="include/polyfills/FileSaver.js"></script>
     
     <script src="include/actions.js"></script>
     <script src="include/editors.js"></script>
@@ -152,7 +155,15 @@
         }
       
         function doOpen() {          
-            window.fileInput.click();
+//            window.fileInput.click();
+        }
+        
+        function doSave() {          
+            var tab = window.tabs[window.currentTab];
+            var bb = new BlobBuilder();
+            bb.append(tab.editor.getValue());
+            var blob = bb.getBlob("application/javascript;charset=" + document.characterSet);
+            saveAs(blob, tab.title + ".js");
         }
         
         function doRun() {
