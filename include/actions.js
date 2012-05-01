@@ -6,6 +6,129 @@ $(document).ready(function() {
     }
 });
 
+function jswb_internal_closeTab(id) {
+    // Remove tab
+    var current_tab = $("#tabitem_" + id);
+    if (current_tab.hasClass("active")) {
+        var prev_tab = current_tab.prev();
+        if (prev_tab.length === 0) {
+            // no prev tab, use the next one
+            prev_tab = current_tab.next();
+        }
+        if (prev_tab.length !== 0) {
+            // Activate this tab
+            prev_tab.children('a').tab('show');
+        }
+    }
+    current_tab.remove();
+    
+    // Remove content
+    $("#" + id).remove();
+    
+    // Clear data
+    delete window.tabs[id];
+}
+
+function jswb_closeAllTabs() {
+    var tabs = window.tabs;
+    for (var i = 0; i < tabs.length; i++) {
+        var tab = tabs[i];
+        if (tab) {
+            jswb_internal_closeTab(tab.id);
+        }
+    }
+}
+
+function jswb_closeTab(id) {
+    jswb_internal_closeTab(id);
+    
+    // If no tabs remain, create a new one
+    if ($("#editor-tabs").children("li").length === 0) {        
+        jswb_newTab();
+    }
+}
+
+function jswb_internal_nextTabID() {
+    var tabs = window.tabs;
+    var i = 1;
+    while (tabs[i]) i++;
+    return i;
+}
+
+function jswb_internal_makeCloseButton() {
+    return $("<button/>").addClass("close").append("&times;");
+}
+
+function jswb_newTab(title, id) {
+    if (id === undefined) {
+        id = jswb_internal_nextTabID();
+    }
+    if (title === undefined) {
+        title = "untitled" + id;
+    }
+    
+    // Create tab
+    // <li><a href="#untitled" data-toggle="tab">untitled<button class="close">&times;</button></a></li>
+    var close_button = jswb_internal_makeCloseButton();
+    close_button.click((function (tabID) {
+        return function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            jswb_closeTab(tabID);
+        };
+    })(id));
+    
+    //     ___________
+    //    | tab_id  x |
+    //    |___________|______________
+    //    | .tab-pane                |
+    //    |                          |
+    //    |      id                  |
+    //    |                          |
+    //    |__________________________|
+    
+    var titleSpan = $('<span/>').addClass("tabTitle").text(title);
+    var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(titleSpan).append(close_button);
+    link.on('shown', (function (tabID) {
+        return function (event) {
+            window.currentTab = tabID;
+        };
+    })(id));
+    link.dblclick((function (title, tabID) {
+        return function (event) {
+            var newTitle = prompt("Enter a new name for '" + window.tabs[tabID].title + "'");
+            if (newTitle !== null) {
+                title.text(newTitle);
+                window.tabs[tabID].title = newTitle;
+            }
+        };
+    })(titleSpan, id));
+    var tab_item = $("<li/>").attr("id", "tabitem_" + id).append(link);
+    $("#editor-tabs").append(tab_item);        
+    
+    // Create content
+    // <div class="tab-pane" id="untitled"><pre class="editor">Hello</pre></div>
+    var pre = document.createElement('pre');
+    pre.setAttribute("class", "editor");
+    
+    var content = $("<div/>").addClass("tab-pane").attr("id", id).append($(pre));
+    $("#editors").append(content);          
+    
+    // Create and register editor
+    var editor = createCodeEditor(pre);
+    window.tabs[id] = {
+        id: id,
+        editor: editor,
+        title: title
+    };
+    
+    // Activate new tab          
+    $("#tab_" + id).tab("show");
+    editor.refresh();
+    
+    return window.tabs[id];
+}
+
 function jswb_addAlert(text, title, kind) {
     var alertDiv = $("<div/>").addClass("alert");
     if (kind) alertDiv.addClass("alert-" + kind);

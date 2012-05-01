@@ -20,128 +20,14 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     
+    <script src="include/modernizr-custom.js"></script>
     <script type="text/javascript">
-      function checkBrowserFeatures() {
-        var featuresOK;
-        
-        featuresOK = (window.FileReader !== undefined);
-        
-        if (featuresOK) {
-            $("#browserStatus").addClass("badge-success");
-            $("#browserStatusMsg").text("All features supported");
-            $("#browserStatusIcon").addClass("icon-ok");
-        } else {
-            $("#browserStatus").addClass("badge-important");
-            $("#browserStatusMsg").text("Some features are missing");
-            $("#browserStatusIcon").addClass("icon-exclamation-sign");
-        }
-        $('#browserStatusMsg').hide();
-      }
-    
-      function doOpen() {          
-          window.fileInput.click();
-      }
-      
-      function doRun() {
-          $("#btn-run").removeClass("btn-primary").addClass("btn-danger").text("Stop");
-          for (var i = 0; i < window.editors.length; i++) {
-              var ed = window.editors[i];
-              if (ed) {
-                  try {
-                      jswb_runScript(ed.getValue());
-                  } catch (e) {
-                      alert("" + e);
-                      break;
-                  }
-              }
-          }
-          $("#btn-run").removeClass("btn-danger").addClass("btn-primary").text("Run");
-      }
-      
-      function doClear() {
-          jswb_clearConsole();
-      }
-      
-      function focusREPL() {
-          window.repl.focus();
-      }
-      
-      function jswb_closeTab(id) {
-          // Remove tab
-          var current_tab = $("#tabitem_" + id);
-          if (current_tab.hasClass("active")) {
-              var prev_tab = current_tab.prev();
-              if (prev_tab.length === 0) {
-                  // no prev tab, use the next one
-                  prev_tab = current_tab.next();
-              }
-              if (prev_tab.length !== 0) {
-                  // Activate this tab
-                  prev_tab.children('a').tab('show');
-              }
-          }
-          current_tab.remove();
-          
-          // Remove content
-          $("#" + id).remove();
-          
-          // Deregister editor
-          delete window.editors[id];
-          
-          if ($("#editor-tabs").children("li").length === 0) {
-              // If no tabs remain, create a new one
-              jswb_newTab();
-          }
-      }
-      
-      function jswb_internal_nextTabID() {
-         var editors = window.editors;
-         var i = 1;
-         while (editors[i]) i++;
-         return i;
-      }
-      
-      function jswb_newTab() {
-          var id = jswb_internal_nextTabID();
-          var title = "untitled" + id;
-          
-          // Create tab
-          // <li><a href="#untitled"data-toggle="tab">untitled<button class="close">&times;</button></a></li>
-          var close_button = $("<button/>").addClass("close").append("&times;");
-          close_button.click((function (tabID) {
-              return function (event) {
-                  event.stopPropagation();
-                  event.preventDefault();
-                  jswb_closeTab(tabID);
-              };              
-          })(id));
-          var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(title).append(close_button);
-          link.on('shown', (function (tabID) {
-              return function (event) {
-                  window.currentEditor = tabID;
-              };
-          })(id));
-          var tab_item = $("<li/>").attr("id", "tabitem_" + id).append(link);
-          $("#editor-tabs").append(tab_item);          
-          
-          // Create content
-          // <div class="tab-pane" id="untitled"><pre class="editor">Hello</pre></div>
-          var pre = document.createElement('pre');
-          pre.setAttribute("class", "editor");
-          
-          var content = $("<div/>").addClass("tab-pane").attr("id", id).append($(pre));
-          $("#editors").append(content);          
-          
-          // Create and register editor
-          var editor = createCodeEditor(pre);
-          window.editors[id] = editor;          
-          
-          // Activate new tab          
-          $("#tab_" + id).tab("show");
-          editor.refresh();
-          
-          return id;
-      }
+        Modernizr.load([
+            {
+                test : Modernizr.json,
+                nope : ['include/polyfills/json2.js']
+            }
+        ]);      
     </script>
   </head>
 
@@ -150,7 +36,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#">JS Workbench Demo</a>
+          <a class="brand" href="#">JS Workbench</a>
           <ul class="nav pull-right">
             <li class="menuBadge"><span id="browserStatus" class="badge" onmouseover="$('#browserStatusMsg').show();" onmouseout="$('#browserStatusMsg').hide();"><i id="browserStatusIcon" class="icon-white"></i> <span id="browserStatusMsg"></span></span></li>
           </ul>
@@ -178,8 +64,8 @@
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
               <a class="btn" href="#" onclick="jswb_newTab();">New</a>
-              <a class="btn" href="#" onclick="doOpen();">Open...</a>
-              <a class="btn" href="#">Save...</a>
+              <a class="btn" href="#" onclick="jswb_loadSession();">Open</a>
+              <a class="btn" href="#" onclick="jswb_saveSession();">Save</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
               <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
@@ -193,6 +79,7 @@
       <div class="row">
         <button id="btn-run" class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
         <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
+        <button class="btn btn-large" onclick="$('#myModal').modal('show');">Modal</button>
       </div>
       <hr/>
       
@@ -212,25 +99,74 @@
     <script src="include/actions.js"></script>
     <script src="include/editors.js"></script>
     <script src="include/builtins.js"></script>
-    <script>    
-      $(document).ready(function() {
-          checkBrowserFeatures();
-          
-          window.alerts = document.getElementById("alerts");
-          window.repl   = createREPL(document.getElementById("repl"));
-          window.output = document.getElementById("output");
-          window.fileInput = document.getElementById("fileInput");
-          
-          window.editors = [];
-          window.currentEditor = undefined;
-          
-          jswb_newTab();
-          
-          $("#repl").click(focusREPL);
-      });
+    <script src="include/storage.js"></script>
+    <script type="text/javascript">    
+        $(document).ready(function() {
+            checkBrowserFeatures();
+            
+            window.alerts = document.getElementById("alerts");
+            window.repl   = createREPL(document.getElementById("repl"));
+            window.output = document.getElementById("output");
+            window.fileInput = document.getElementById("fileInput");
+            
+            window.tabs = [];
+            window.currentTab = undefined;
+            
+            jswb_newTab();
+            
+            $("#repl").click(focusREPL);
+        });
+        
+        window.jswb = {};
+        
+        function checkBrowserFeatures() {
+            var featuresOK;
+            
+            featuresOK = (window.FileReader !== undefined);
+            
+            if (featuresOK) {
+                $("#browserStatus").addClass("badge-success");
+                $("#browserStatusMsg").text("All features supported");
+                $("#browserStatusIcon").addClass("icon-ok");
+            } else {
+                $("#browserStatus").addClass("badge-important");
+                $("#browserStatusMsg").text("Some features are missing");
+                $("#browserStatusIcon").addClass("icon-exclamation-sign");
+            }
+            $('#browserStatusMsg').hide();
+        }
+      
+        function doOpen() {          
+            window.fileInput.click();
+        }
+        
+        function doRun() {
+            $("#btn-run").removeClass("btn-primary").addClass("btn-danger").text("Stop");
+            for (var i = 0; i < window.tabs.length; i++) {
+                var tab = window.tabs[i];
+                if (tab) {
+                    var ed = tab.editor;
+                    try {
+                        jswb_runScript(ed.getValue());
+                    } catch (e) {
+                        alert("" + e);
+                        break;
+                    }
+                }
+            }
+            $("#btn-run").removeClass("btn-danger").addClass("btn-primary").text("Run");
+        }
+        
+        function doClear() {
+            jswb_clearConsole();
+        }
+        
+        function focusREPL() {
+            window.repl.focus();
+        }
     </script>
     
     <!-- Hidden file input to load files into editors -->
-    <input type="file" id="fileInput" accept="*" style="display: none;" onchange="jswb_loadFile(window.editors[window.currentEditor], this.files[0])">
+    <input type="file" id="fileInput" accept="*" style="display: none;" onchange="jswb_loadFile(window.tabs[window.currentTab].editor, this.files[0])">
   </body>
 </html>
