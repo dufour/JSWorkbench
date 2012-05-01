@@ -20,7 +20,14 @@ body {
   
   border-left: 1px solid #DDD;
   border-right: 1px solid #DDD;
-  border-bottom: 1px solid #DDD; 
+  border-bottom: 1px solid #DDD;
+  
+  -webkit-border-bottom-left-radius: 4px;
+  -moz-border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -moz-border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 4px;
   
   margin-bottom: 9px;
 }
