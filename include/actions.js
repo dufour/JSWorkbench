@@ -37,6 +37,7 @@ function jswb_closeAllTabs() {
             jswb_internal_closeTab(tab.id);
         }
     }
+    window.tabs = [];
 }
 
 function jswb_closeTab(id) {

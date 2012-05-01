@@ -24,14 +24,21 @@ function jswb_saveSession() {
 
 function jswb_loadSession() {
     // Restore tabs
-    jswb_closeAllTabs();
     var tabData = localStorage["jswb.tabs"];
-    var tabs = tabData ? JSON.parse(tabData) : [];
-    for (var i = 0; i < tabs.length; i++) {
-        var tab = tabs[i];
-        var newTab = jswb_newTab(tab.title, tab.id);
-        newTab.editor.setValue(tab.text);
-    }    
+    if (tabData) {
+        jswb_closeAllTabs();
+        var tabs = JSON.parse(tabData);
+        if (tabs.length > 0) {
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
+                var newTab = jswb_newTab(tab.title, tab.id);
+                newTab.editor.setValue(tab.text);
+            }    
+        }
+        if (window.tabs.length === 0) {
+            jswb_newTab();
+        }
+    }
     
     // Restore console
     window.output.innerHTML = localStorage["jswb.console"] || "";
