@@ -209,8 +209,20 @@ function jswb_save(cm) {
     saveAs(blob, cm.tab.title + ".js");
 }
 
-function jswb_load(cm) {
-    // TODO
+function jswb_load(cm) {    
+    if (!Modernizr.filereader) {
+        jswb_reportError("File is reader not supported by the browser");
+    } else {
+        $("#btnOpenFile").click((function (editor) {
+             return function (event) {
+                 var fileInput = document.getElementById('fileInput');
+                 jswb_loadFile(editor, fileInput.files[0]);
+                 $('#fileOpenDialog').modal('hide');
+             };
+        })(cm));
+        
+        $("#fileOpenDialog").modal('show');
+    }
 }
 
 function jswb_saveProject(cm) {

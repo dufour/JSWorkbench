@@ -27,7 +27,7 @@
                 test : Modernizr.json,
                 nope : ['include/polyfills/json2.js']
             }
-        ]);      
+        ]);
     </script>
   </head>
 
@@ -70,7 +70,7 @@
       <div class="row">
         <div class="span12">
           <!-- Tab bar -->
-          <ul id="editor-tabs" class="nav nav-tabs"></ul>          
+          <ul id="editor-tabs" class="nav nav-tabs"></ul>
           <!-- Toolbar -->
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
@@ -79,7 +79,6 @@
               <a class="btn" href="#" onclick="doSave();">Save</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
-              <!-- <a class="btn" href="#"><i class="icon-plus"></i></a> -->
             </div>
             <!-- Editors -->
             <div id="editors" class="tab-content"></div>
@@ -96,7 +95,7 @@
             </div>
             <div class="modal-footer">
               <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-              <a href="#" id="btnOpenFile" class="btn btn-primary disabled" onclick="onFileOpen();">Open</a>
+              <a href="#" id="btnOpenFile" class="btn btn-primary disabled">Open</a>
             </div>
           </div>
         </div>
@@ -175,19 +174,9 @@
         }
       
         function doOpen() {
-            if (!Modernizr.filereader) {
-                jswb_reportError("File is reader not supported by the browser");
-            } else {
-                $("#fileOpenDialog").modal('show');
-            }
-        }
-        
-        function onFileOpen() {
             var tab = jswb_currentTab();
-            var fileInput = document.getElementById('fileInput');
-            jswb_loadFile(tab.editor, fileInput.files[0]);
-            $('#fileOpenDialog').modal('hide');
-        }
+            jswb_load(tab.editor);
+        }        
         
         function onFileSelected() {
             $('#btnOpenFile').removeClass('disabled');
