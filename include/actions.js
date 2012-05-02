@@ -6,6 +6,13 @@ $(document).ready(function() {
     }
 });
 
+function jswb_currentTab() {
+    if (window.currentTab) {
+        return window.tabs[window.currentTab];
+    }
+    return undefined;
+}
+
 function jswb_internal_closeTab(id) {
     // Remove tab
     var current_tab = $("#tabitem_" + id);
@@ -117,11 +124,13 @@ function jswb_newTab(title, id) {
     
     // Create and register editor
     var editor = createCodeEditor(pre);
-    window.tabs[id] = {
+    var tab = {
         id: id,
         editor: editor,
         title: title
     };
+    window.tabs[id] = tab;
+    editor.tab = tab;
     
     // Activate new tab          
     $("#tab_" + id).tab("show");
@@ -194,11 +203,14 @@ function jswb_redo(cm) {
 }
 
 function jswb_save(cm) {
-    alert("Would save...");
+    var bb = new BlobBuilder();
+    bb.append(cm.getValue());
+    var blob = bb.getBlob("application/x-download;charset=" + document.characterSet);
+    saveAs(blob, cm.tab.title + ".js");
 }
 
 function jswb_load(cm) {
-    window.fileInput.click();
+    // TODO
 }
 
 function jswb_saveProject(cm) {

@@ -75,7 +75,7 @@
           <div id="main-editor-area">
             <div id="editor-toolbar"class="btn-group">
               <a class="btn" href="#" onclick="jswb_newTab();">New</a>
-              <a class="btn" href="#">Open</a>
+              <a class="btn" href="#" onclick="doOpen();">Open</a>
               <a class="btn" href="#" onclick="doSave();">Save</a>
               <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
               <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
@@ -83,6 +83,21 @@
             </div>
             <!-- Editors -->
             <div id="editors" class="tab-content"></div>
+          </div>
+          
+          <!-- Modals (hidden) -->
+          <div class="modal hide" id="fileOpenDialog">
+            <div class="modal-header">
+              <button class="close" data-dismiss="modal">×</button>
+              <h3>Open file...</h3>
+            </div>
+            <div class="modal-body">
+              <p><form id="fileInputForm"><input type="file" id="fileInput" accept="*" onchange="onFileSelected();"></form></p>
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+              <a href="#" id="btnOpenFile" class="btn btn-primary disabled" onclick="onFileOpen();">Open</a>
+            </div>
           </div>
         </div>
       </div>
@@ -125,7 +140,6 @@
             window.alerts = document.getElementById("alerts");
             window.repl   = createREPL(document.getElementById("repl"));
             window.output = document.getElementById("output");
-            window.fileInput = document.getElementById("fileInput");
             
             window.tabs = [];
             window.currentTab = undefined;
@@ -133,6 +147,12 @@
             jswb_newTab();
             
             $("#repl").click(focusREPL);
+            
+            $("#fileOpenDialog").on('show', function () {
+                // Reset file open model before displaying
+                document.getElementById('fileInputForm').innerHTML = document.getElementById('fileInputForm').innerHTML;
+                $("#btnOpenFile").addClass("disabled");
+            });
         });
         
         window.jswb = {};
@@ -140,7 +160,7 @@
         function checkBrowserFeatures() {
             var featuresOK;
             
-            featuresOK = (window.FileReader !== undefined);
+            featuresOK = Modernizr.filereader;
             
             if (featuresOK) {
                 $("#browserStatus").addClass("badge-success");
@@ -154,16 +174,28 @@
             $('#browserStatusMsg').hide();
         }
       
-        function doOpen() {          
-//            window.fileInput.click();
+        function doOpen() {
+            if (!Modernizr.filereader) {
+                jswb_reportError("File is reader not supported by the browser");
+            } else {
+                $("#fileOpenDialog").modal('show');
+            }
+        }
+        
+        function onFileOpen() {
+            var tab = jswb_currentTab();
+            var fileInput = document.getElementById('fileInput');
+            jswb_loadFile(tab.editor, fileInput.files[0]);
+            $('#fileOpenDialog').modal('hide');
+        }
+        
+        function onFileSelected() {
+            $('#btnOpenFile').removeClass('disabled');
         }
         
         function doSave() {          
-            var tab = window.tabs[window.currentTab];
-            var bb = new BlobBuilder();
-            bb.append(tab.editor.getValue());
-            var blob = bb.getBlob("application/javascript;charset=" + document.characterSet);
-            saveAs(blob, tab.title + ".js");
+            var tab = jswb_currentTab();
+            if (tab) jswb_save(tab.editor);
         }
         
         function doRun() {
@@ -175,7 +207,7 @@
                     try {
                         jswb_runScript(ed.getValue());
                     } catch (e) {
-                        alert("" + e);
+                        jswb_reportError(tab.title + " - " + e);
                         break;
                     }
                 }
@@ -191,8 +223,5 @@
             window.repl.focus();
         }
     </script>
-    
-    <!-- Hidden file input to load files into editors -->
-    <input type="file" id="fileInput" accept="*" style="display: none;" onchange="jswb_loadFile(window.tabs[window.currentTab].editor, this.files[0])">
   </body>
 </html>
