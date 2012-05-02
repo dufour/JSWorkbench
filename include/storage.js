@@ -1,6 +1,11 @@
+function jswb_clearSession() {
+    localStorage.removeItem("jswb.tabs");
+    localStorage.removeItem("jswb.console");
+}
+
 function jswb_saveSession() {
     var tabData = [];
-    
+
     // Save tabs
     var tabs = window.tabs;
     for (var i = 0; i < tabs.length; i++) {
