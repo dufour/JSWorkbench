@@ -58,13 +58,13 @@ function createREPL(node) {
                     try {
                         cm.busy = true;
                         var result = jswb_runScript(script);
-                        cm.busy = false;
                         if (result !== undefined) {
                             jswb_addLineToConsole(result, "console-result");
                         }
                     } catch (error) {
                         jswb_addLineToConsole(error, "console-error label label-important");
                     }
+                    cm.busy = false;
                 }
                 
                 return true;
