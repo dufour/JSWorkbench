@@ -182,16 +182,11 @@ function jswb_clearConsole() {
 function jswb_loadFile(cm, f) {
     if (!cm) return;
     
-    var reader = new FileReader();
-    reader.onerror = function (e) {
-          jswb_reportError("File read failed");
-    };
-    reader.onload = (function(theEditor) {
-        return function(e) {
-            theEditor.setValue(e.target.result);
+    jswb_internal_readTextFile((function(theEditor) {
+        return function(contents) {
+            theEditor.setValue(contents);
        };
-    })(cm);
-    reader.readAsText(f);
+    })(cm));
 }
 
 function jswb_undo(cm) {
@@ -202,33 +197,120 @@ function jswb_redo(cm) {
     cm.redo();
 }
 
-function jswb_save(cm) {
-    var bb = new BlobBuilder();
-    bb.append(cm.getValue());
-    var blob = bb.getBlob("application/x-download;charset=" + document.characterSet);
-    saveAs(blob, cm.tab.title + ".js");
-}
-
-function jswb_load(cm) {    
+function jswb_internal_readTextFile(f, callback) {
     if (!Modernizr.filereader) {
         jswb_reportError("File is reader not supported by the browser");
     } else {
-        $("#btnOpenFile").click((function (editor) {
-             return function (event) {
+        var reader = new FileReader();
+        reader.onerror = function (e) {
+            jswb_reportError("File read failed");
+        };
+        reader.onload = function(e) {
+            callback(e.target.result);
+        };        
+        reader.readAsText(f);
+    }
+}
+
+function jswb_internal_saveFile(contents, name) {
+    if (name === undefined) name = "untitled";
+    var bb = new BlobBuilder();    
+    if (typeof contents !== "string") {
+        contents = String(contents);
+    }
+    bb.append(contents);
+    var blob = bb.getBlob("application/x-download;charset=" + document.characterSet);
+    saveAs(blob, name);
+}
+
+function jswb_internal_openFile(callback) {
+    if (!Modernizr.filereader) {
+        jswb_reportError("File is reader not supported by the browser");
+    } else {
+        $("#btnOpenFile").click((function (cb) {
+            return function (event) {
                  var fileInput = document.getElementById('fileInput');
-                 jswb_loadFile(editor, fileInput.files[0]);
+                 var file = fileInput.files[0];
+                 if (cb) {
+                     cb(file);
+                 }
                  $('#fileOpenDialog').modal('hide');
              };
-        })(cm));
+        })(callback));
         
+        // Display the dialog
         $("#fileOpenDialog").modal('show');
     }
 }
 
+
+function jswb_save(cm) {
+    jswb_internal_saveFile(cm.getValue(), cm.tab.title + ".js");
+}
+
+function jswb_load(cm) {   
+    jswb_internal_openFile((function (editor) {
+        return function (file) {
+            jswb_loadFile(editor, file);
+        };
+    })(cm));
+}
+
+function jswb_serializeState() {
+    var state = {
+        tabs: [],
+        console: undefined
+    };
+    var tabs = window.tabs;
+    for (var i = 0; i < tabs.length; i++) {
+        var tab = tabs[i];
+        if (tab) {
+            state.tabs.push({
+                id: tab.id,
+                title: tab.title,
+                text: tab.editor.getValue()
+            });
+        }
+    }
+    
+    state.console = window.output.innerHTML;
+    
+    return state;
+}
+
+function jswb_restoreState(state) {
+    if (state === undefined) return;
+    
+    try {
+        if (state.tabs) {
+            var tabs = state.tabs;
+            jswb_closeAllTabs();
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
+                var newTab = jswb_newTab(tab.title, tab.id);
+                newTab.editor.setValue(tab.text);
+            }
+            if (window.tabs.length === 0) {
+                jswb_newTab();
+            }
+        }
+        
+        // Restore console
+        window.output.innerHTML = state.console || "";
+    } catch (e) {
+        jswb_reportError("Unable to restore state: " + e);
+    }
+}
+
 function jswb_saveProject(cm) {
-    alert("Would save project...");
+    var state = jswb_serializeState();
+    jswb_internal_saveFile(JSON.stringify(state), "project.jswb");
 }
 
 function jswb_loadProject(cm) {
-    alert("Would load project...");
+    jswb_internal_openFile(function (file) {
+        jswb_internal_readTextFile(file, function (contents) {
+            jswb_restoreState(JSON.parse(contents));
+        });
+    });
 }

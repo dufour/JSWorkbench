@@ -74,12 +74,19 @@
           <ul id="editor-tabs" class="nav nav-tabs"></ul>
           <!-- Toolbar -->
           <div id="main-editor-area">
-            <div id="editor-toolbar"class="btn-group">
-              <a class="btn" href="#" onclick="jswb_newTab();">New</a>
-              <a class="btn" href="#" onclick="doOpen();">Open</a>
-              <a class="btn" href="#" onclick="doSave();">Save</a>
-              <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
-              <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
+            <div id="editor-toolbar" class="btn-toolbar">
+              <div class="btn-group">
+                <a class="btn" href="#" onclick="jswb_newTab();">New</a>
+                <a class="btn" href="#" onclick="doOpen();">Open</a>
+                <a class="btn" href="#" onclick="doSave();">Save</a>
+                <a class="btn" href="#" onclick="jswb_loadProject();">Open project</a>
+                <a class="btn" href="#" onclick="jswb_saveProject();">Save project</a>
+              </div>
+              
+              <div class="btn-group">
+                <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
+                <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
+              </div>              
             </div>
             <!-- Editors -->
             <div id="editors" class="tab-content"></div>
