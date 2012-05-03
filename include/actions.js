@@ -171,7 +171,7 @@ function jswb_addLineToConsole(line, cssClass) {
 
 function jswb_runScript(s) {
     var _eval = eval; // Use indirect eval to simulate top-level execution
-    return _eval(s);  // FIXME: insecure!
+    return _eval("with (jswb.builtins) {" + s + "}");  // FIXME: insecure!
 }
 
 function jswb_clearConsole() {

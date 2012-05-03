@@ -155,6 +155,12 @@ body {
   margin-bottom: 0;
 }
 
-#run-toolbar {
+.btn-row .btn-toolbar {
   margin: 0;
+}
+
+.pixelBox td {
+  width: 5px;
+  height: 5px;
+  border: 1px solid #a0a0a0;
 }

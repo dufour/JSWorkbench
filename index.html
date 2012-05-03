@@ -57,7 +57,7 @@
       <!-- Placeholder for errors, warnings, etc -->
       <div class="row"><div id="alerts" class="span12"></div></div>
 
-      <div class="row">
+      <div class="row btn-row">
         <div class="span12">
           <div id="main-toolbar" class="btn-toolbar">
             <div class="btn-group">
@@ -123,9 +123,9 @@
       </div>
 
       <!-- Buttons -->
-      <div class="row">
+      <div class="row btn-row">
         <div class="span8">
-          <div id="run-toolbar" class="btn-toolbar">
+          <div class="btn-toolbar">
             <div class="btn-group">
               <button id="btn-run" class="btn btn-primary" onclick="doRunAll();">Run all</button>
               <button id="btn-run-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -143,16 +143,19 @@
         </div>
 
         <div class="span4">
-          <div class="btn-group">
-            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              No output
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="#">No output</a></li>
-              <li><a href="#">Text</a></li>
-              <li><a href="#">Grid</a></li>
-            </ul>
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <a id="btnOutputKind" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <span class="btnLabel">No output</span>
+                <span class="caret"></span>
+              </a>
+              <ul id="dropdownOutputKind" class="dropdown-menu">
+                <li><a href="#">No output</a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <button id="btnClearOutput" class="btn" onclick="jswb_clearOutput();">Clear</button>
+            </div>
           </div>
         </div>
       </div>
@@ -181,6 +184,10 @@
     <script src="include/builtins.js"></script>
     <script src="include/storage.js"></script>
     <script type="text/javascript">
+        window.jswb = {
+            builtins: {}
+        };
+        
         $(document).ready(function() {
             checkBrowserFeatures();
 
@@ -201,8 +208,6 @@
                 $("#btnOpenFile").addClass("disabled");
             });
         });
-
-        window.jswb = {};
 
         function checkBrowserFeatures() {
             var featuresOK;
@@ -273,5 +278,6 @@
             window.repl.focus();
         }
     </script>
+    <script src="include/output.js"></script>
   </body>
 </html>
