@@ -19,7 +19,7 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
+
     <script src="include/modernizr-custom.js"></script>
     <script type="text/javascript">
         Modernizr.load([
@@ -45,34 +45,34 @@
     </div>
 
     <!-- Content -->
-    <div class="container">   
-    
-      <!-- Header --> 
+    <div class="container">
+
+      <!-- Header -->
       <div class="row">
         <div class="span12">
          <p>This is work in progress. Enter some JavaScript code below and click the Run button to execute it. Note that you can use <code>print</code> and <code>println</code> to display some information in the console.</p>
         </div>
       </div>
-      
+
       <!-- Placeholder for errors, warnings, etc -->
       <div class="row"><div id="alerts" class="span12"></div></div>
-      
+
       <div class="row">
         <div class="span12">
           <div id="main-toolbar" class="btn-toolbar">
-            <div class="btn-group">              
+            <div class="btn-group">
               <a class="btn btn-small" href="#" onclick="jswb_loadSession();">Restore session</a>
               <a class="btn btn-small" href="#" onclick="jswb_saveSession();">Save session</a>
               <a class="btn btn-small" href="#" onclick="jswb_clearSession();">Clear saved session</a>
             </div>
-            <div class="btn-group">              
+            <div class="btn-group">
               <a class="btn" href="#" onclick="jswb_loadProject();"><img src="icons/icon-project.png"> Open</a>
               <a class="btn" href="#" onclick="jswb_saveProject();"><img src="icons/icon-project.png"> Save</a>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Main area (editors) -->
       <div class="row">
         <div class="span8">
@@ -86,16 +86,16 @@
                 <a class="btn" href="#" onclick="doOpen();"><i class="icon-folder-open"></i></a>
                 <a class="btn" href="#" onclick="doSave();"><i class="icon-download-alt"></i></a>
               </div>
-              
+
               <div class="btn-group">
                 <a class="btn" href="javascript:jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
                 <a class="btn" href="javascript:jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
-              </div>              
+              </div>
             </div>
             <!-- Editors -->
             <div id="editors" class="tab-content"></div>
           </div>
-          
+
           <!-- Modals (hidden) -->
           <div class="modal hide" id="fileOpenDialog">
             <div class="modal-header">
@@ -111,26 +111,60 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Output -->
         <div class="span4">
-          <div id="outputBoxHeader"><h4>Output:</h4></div>
+          <div id="outputBoxHeader">Output:</div>
           <div id="outputBox" class="well"></div>
         </div>
       </div>
-      
+
+      <div class="row">
+      </div>
+
       <!-- Buttons -->
       <div class="row">
-        <div class="span12">
-          <button id="btn-run" class="btn btn-primary btn-large" onclick="javascript:doRun();">Run</button>
-          <button class="btn btn-large" onclick="javascript:doClear();">Clear</button>
+        <div class="span8">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <button id="btn-run" class="btn btn-primary" onclick="doRunAll();">Run all</button>
+              <button id="btn-run-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="#" onclick="doRunCurrent();">Run active file</a></li>
+                <li><a href="#" onclick="doRunSelection();">Run selection</a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="javascript:doClear();">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="span4">
+          <ul class="nav nav-pills">
+            <li class="dropdown">
+              <a class="dropdown-toggle"
+                 data-toggle="dropdown"
+                 href="#">
+                  None
+                  <b class="caret"></b>
+                </a>
+              <ul class="dropdown-menu">
+                <li><a href="#">None</a></li>
+                <li><a href="#">Text</a></li>
+                <li><a href="#">Grid</a></li>
+              </ul>
+            </li>
+          </ul>
         </div>
       </div>
       <hr/>
-      
+
       <!-- Console -->
       <div class="row">
-        <div class="span12">Console:        
+        <div class="span12">Console:
           <pre id="repl"><div id="output"></div></pre>
         </div>
       </div>
@@ -142,43 +176,43 @@
     <script src="include/codemirror/lib/codemirror.js"></script>
     <script src="include/codemirror/mode/javascript/javascript.js"></script>
     <script src="include/cm-autoclose.js"></script>
-    
+
     <script src="include/polyfills/BlobBuilder.js"></script>
     <script src="include/polyfills/FileSaver.js"></script>
-    
+
     <script src="include/actions.js"></script>
     <script src="include/editors.js"></script>
     <script src="include/builtins.js"></script>
     <script src="include/storage.js"></script>
-    <script type="text/javascript">    
+    <script type="text/javascript">
         $(document).ready(function() {
             checkBrowserFeatures();
-            
+
             window.alerts = document.getElementById("alerts");
             window.repl   = createREPL(document.getElementById("repl"));
             window.output = document.getElementById("output");
-            
+
             window.tabs = [];
             window.currentTab = undefined;
-            
+
             jswb_newTab();
-            
+
             $("#repl").click(focusREPL);
-            
+
             $("#fileOpenDialog").on('show', function () {
                 // Reset file open model before displaying
                 document.getElementById('fileInputForm').innerHTML = document.getElementById('fileInputForm').innerHTML;
                 $("#btnOpenFile").addClass("disabled");
             });
         });
-        
+
         window.jswb = {};
-        
+
         function checkBrowserFeatures() {
             var featuresOK;
-            
+
             featuresOK = Modernizr.filereader;
-            
+
             if (featuresOK) {
                 $("#browserStatus").addClass("badge-success");
                 $("#browserStatusMsg").text("All features supported");
@@ -190,42 +224,55 @@
             }
             $('#browserStatusMsg').hide();
         }
-      
+
         function doOpen() {
             var tab = jswb_currentTab();
             jswb_load(tab.editor);
-        }        
-        
+        }
+
         function onFileSelected() {
             $('#btnOpenFile').removeClass('disabled');
         }
-        
-        function doSave() {          
+
+        function doSave() {
             var tab = jswb_currentTab();
             if (tab) jswb_save(tab.editor);
         }
-        
-        function doRun() {
+
+        function jswb_internal_run(tabs, mode) {
             $("#btn-run").removeClass("btn-primary").addClass("btn-danger").text("Stop");
-            for (var i = 0; i < window.tabs.length; i++) {
-                var tab = window.tabs[i];
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
                 if (tab) {
                     var ed = tab.editor;
+                    var script = mode === "selection" ? ed.getSelection() : ed.getValue();
                     try {
-                        jswb_runScript(ed.getValue());
+                        jswb_runScript(script);
                     } catch (e) {
                         jswb_reportError(tab.title + " - " + e);
                         break;
                     }
                 }
             }
-            $("#btn-run").removeClass("btn-danger").addClass("btn-primary").text("Run");
+            $("#btn-run").removeClass("btn-danger").addClass("btn-primary").text("Run all");
         }
-        
+
+        function doRunAll() {
+            jswb_internal_run(tabs);
+        }
+
+        function doRunCurrent() {
+           jswb_internal_run([jswb_currentTab()]);
+        }
+
+        function doRunSelection() {
+            jswb_internal_run([jswb_currentTab()], "selection");
+        }
+
         function doClear() {
             jswb_clearConsole();
         }
-        
+
         function focusREPL() {
             window.repl.focus();
         }
