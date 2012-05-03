@@ -59,10 +59,16 @@
       
       <div class="row">
         <div class="span12">
-          <div id="main-toolbar" class="btn-group">              
-            <a class="btn btn-small" href="#" onclick="jswb_loadSession();">Restore session</a>
-            <a class="btn btn-small" href="#" onclick="jswb_saveSession();">Save session</a>
-            <a class="btn btn-small" href="#" onclick="jswb_clearSession();">Clear saved session</a>
+          <div id="main-toolbar" class="btn-toolbar">
+            <div class="btn-group">              
+              <a class="btn btn-small" href="#" onclick="jswb_loadSession();">Restore session</a>
+              <a class="btn btn-small" href="#" onclick="jswb_saveSession();">Save session</a>
+              <a class="btn btn-small" href="#" onclick="jswb_clearSession();">Clear saved session</a>
+            </div>
+            <div class="btn-group">              
+              <a class="btn" href="#" onclick="jswb_loadProject();"><img src="icons/icon-project.png"> Open</a>
+              <a class="btn" href="#" onclick="jswb_saveProject();"><img src="icons/icon-project.png"> Save</a>
+            </div>
           </div>
         </div>
       </div>
@@ -76,11 +82,9 @@
           <div id="main-editor-area">
             <div id="editor-toolbar" class="btn-toolbar">
               <div class="btn-group">
-                <a class="btn" href="#" onclick="jswb_newTab();">New</a>
-                <a class="btn" href="#" onclick="doOpen();">Open</a>
-                <a class="btn" href="#" onclick="doSave();">Save</a>
-                <a class="btn" href="#" onclick="jswb_loadProject();">Open project</a>
-                <a class="btn" href="#" onclick="jswb_saveProject();">Save project</a>
+                <a class="btn" href="#" onclick="jswb_newTab();"><i class="icon-file"></i></a>
+                <a class="btn" href="#" onclick="doOpen();"><i class="icon-folder-open"></i></a>
+                <a class="btn" href="#" onclick="doSave();"><i class="icon-download-alt"></i></a>
               </div>
               
               <div class="btn-group">
