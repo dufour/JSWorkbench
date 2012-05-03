@@ -154,3 +154,7 @@ body {
   height: 235px;
   margin-bottom: 0;
 }
+
+#run-toolbar {
+  margin: 0;
+}
