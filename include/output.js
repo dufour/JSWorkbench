@@ -51,6 +51,11 @@ var PixelGridOutput = {
         clearPixel: function (r, c) {
             $("#pixel_" + r + "_" + c).css('background-color', 'transparent');
         },
+        resetPixels: function () {
+            PixelGridOutput.clear();
+        },
+        ROWS: 10,
+        COLUMNS: 10,
     },
 };
 jswb.outputPlugins.push(PixelGridOutput);
@@ -69,9 +74,9 @@ function jswb_onOutputKindClicked(outputPlugin) {
     jswb.currentOutput = outputPlugin;
     jswb.builtins = outputPlugin.builtins || {};
     
-    if (outputPlugin.draw) {
-        var container = document.getElementById("outputBox");
-        $(container).empty();
+    var container = document.getElementById("outputBox");
+    $(container).empty();
+    if (outputPlugin.draw) {        
         outputPlugin.draw(container);
     }
 }
