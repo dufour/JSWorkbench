@@ -259,6 +259,7 @@
 
         function jswb_internal_run(tabs, mode) {
             $("#btn-run").removeClass("btn-primary").addClass("btn-danger").text("Stop");
+            $("#btn-run-dropdown").removeClass("btn-primary").addClass("btn-danger");
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
                 if (tab) {
@@ -273,6 +274,7 @@
                 }
             }
             $("#btn-run").removeClass("btn-danger").addClass("btn-primary").text("Run all");
+            $("#btn-run-dropdown").removeClass("btn-danger").addClass("btn-primary");
         }
 
         function doRunAll() {
