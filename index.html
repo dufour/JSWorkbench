@@ -22,6 +22,23 @@
 
     <script src="include/modernizr-custom.js"></script>
     <script type="text/javascript">
+        window.MISSING   = 0;
+        window.EMULATED  = 1;
+        window.SUPPORTED = 2;
+
+        window.features = [
+            {
+              name: "File reader",
+              url:  "http://caniuse.com/filereader",
+              status: Modernizr.filereader ? SUPPORTED : MISSING
+            },
+            {
+              name: "JSON",
+              url:  "http://caniuse.com/json",
+              status: Modernizr.json ? SUPPORTED : EMULATED
+            }
+        ];
+
         Modernizr.load([
             {
                 test : Modernizr.json,
@@ -38,7 +55,20 @@
         <div class="container">
           <a class="brand" href="#">JS Workbench</a>
           <ul class="nav pull-right">
-            <li class="menuBadge"><span id="browserStatus" class="badge" onmouseover="$('#browserStatusMsg').show();" onmouseout="$('#browserStatusMsg').hide();"><i id="browserStatusIcon" class="icon-white"></i> <span id="browserStatusMsg"></span></span></li>
+            <li id="browserIssues" class="dropdown">
+              <a href="#"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
+                    onmouseover="$('#browserStatusMsg').show();"
+                    onmouseout="$('#browserStatusMsg').hide();">
+                    <span id="browserStatus" class="badge">
+                      <i id="browserStatusIcon" class="icon-white"></i>
+                      <span id="browserStatusMsg"></span>
+                      <b class="caret"></b>
+                    </span>
+              </a>
+              <ul class="dropdown-menu"></ul>
+            </li>
           </ul>
         </div>
       </div>
@@ -110,7 +140,7 @@
               <a href="#" id="btnOpenFile" class="btn btn-primary disabled">Open</a>
             </div>
           </div>
-          
+
           <div class="btn-toolbar">
             <div class="btn-group">
               <button id="btn-run" class="btn btn-primary" onclick="doRunAll();">Run all</button>
@@ -125,7 +155,7 @@
             <div class="btn-group">
               <button class="btn" onclick="doClear();">Clear</button>
             </div>
-          </div>          
+          </div>
         </div>
 
         <!-- Output -->
@@ -134,7 +164,7 @@
 
           <div id="mainOutputArea">
             <div id="outputBox" class="well outputBox"></div>
-            
+
             <div class="btn-toolbar">
               <div class="btn-group">
                 <a id="btnOutputKind" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -152,7 +182,7 @@
           </div>
         </div>
       </div>
-      
+
       <hr/>
 
       <!-- Console -->
@@ -181,8 +211,8 @@
             tabs: [],
             currentTab: undefined,
             currentConsoleLine: undefined,
-            currentOutput: undefined,  
-            outputPlugins: [],          
+            currentOutput: undefined,
+            outputPlugins: [],
 
             // Elements
             alerts: undefined,
@@ -190,7 +220,7 @@
             console: undefined,
             output: undefined,
         };
-        
+
         function disableHashLinks() {
             $("a").each(function () {
                 if (this.onclick && (this.href === '#' || this.href === document.baseURI + "#")) {
@@ -227,20 +257,41 @@
         });
 
         function checkBrowserFeatures() {
-            var featuresOK;
+            var MISSING = 0, EMULATED = 1, SUPPORTED = 2;
+            var status = SUPPORTED;
 
-            featuresOK = Modernizr.filereader;
+            for (var i = 0; i < window.features.length; i++) {
+                var feature = window.features[i];
+                var status_label;
+                switch (feature.status) {
+                  case MISSING:
+                    status_label = "missing";
+                    break;
+                  case EMULATED:
+                    status_label = "emulated";
+                    break;
+                  default:
+                    status_label = "supported";
+                    break;
+                }
 
-            if (featuresOK) {
+                $("#browserIssues ul").append($("<li/>").append($('<a/>').attr('href', feature.url).attr("target", "new").text(feature.name + " " + status_label)));
+                status = Math.min(status, feature.status);
+            }
+
+            if (status === SUPPORTED) {
                 $("#browserStatus").addClass("badge-success");
                 $("#browserStatusMsg").text("All features supported");
                 $("#browserStatusIcon").addClass("icon-ok");
+            } else if (status === EMULATED) {
+                $("#browserStatus").addClass("badge-warning");
+                $("#browserStatusMsg").text("Some features are emulated");
+                $("#browserStatusIcon").addClass("icon-warning-sign");
             } else {
                 $("#browserStatus").addClass("badge-important");
                 $("#browserStatusMsg").text("Some features are missing");
                 $("#browserStatusIcon").addClass("icon-exclamation-sign");
             }
-            $('#browserStatusMsg').hide();
         }
 
         function doOpen() {
