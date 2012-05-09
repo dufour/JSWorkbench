@@ -8,9 +8,9 @@ function createCodeEditor(node) {
         extraKeys: {
             "Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
-            "Shift-Cmd-S": function(cm) { jswb_saveProject(cm); return true; },
-            "Shift-Cmd-O": function(cm) { jswb_loadProject(cm); return true; },
-            "Ctrl-O": function (cm) { jswb_load(cm); return true; },            
+            "Shift-Cmd-S": function(cm) { jswb.saveProject(cm); return true; },
+            "Shift-Cmd-O": function(cm) { jswb.loadProject(cm); return true; },
+            "Ctrl-O": function (cm) { jswb.load(cm); return true; },            
         },
         
         onDragEvent: function(cm, event) {
@@ -20,7 +20,7 @@ function createCodeEditor(node) {
                 event.preventDefault();
                 var dt = event.dataTransfer; 
                 var files = dt.files;            
-                jswb_loadFile(cm, files[0]);
+                jswb.loadFile(cm, files[0]);
                 return true;
             } else if (event.type === "dragover") {
                 event.stopPropagation();
@@ -31,7 +31,7 @@ function createCodeEditor(node) {
     };
     
     var editor = CodeMirror(node, options);
-    editor.save = jswb_save;
+    editor.save = jswb.save;
     return editor;
 }
 
@@ -46,23 +46,23 @@ function createREPL(node) {
         lineNumbers:  false,   // Show line numbers
         matchBrackets: true,
         extraKeys: {
-            "Ctrl-L": function (cm) { jswb_clearConsole(); },
+            "Ctrl-L": function (cm) { jswb.clearConsole(); },
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
                 var script = cm.getValue();
                 cm.setValue("");
                 cm.refresh();                           
                 
-                jswb_addLineToConsole(script, "console-line");
+                jswb.addLineToConsole(script, "console-line");
                 if (script) {
                     try {
                         cm.busy = true;
-                        var result = jswb_runScript(script);
+                        var result = jswb.runScript(script);
                         if (result !== undefined) {
-                            jswb_addLineToConsole(result, "console-result");
+                            jswb.addLineToConsole(result, "console-result");
                         }
                     } catch (error) {
-                        jswb_addLineToConsole(error, "console-error label label-important");
+                        jswb.addLineToConsole(error, "console-error label label-important");
                     }
                     cm.busy = false;
                 }

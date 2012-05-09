@@ -7,9 +7,11 @@ body {
   border: 1px solid #aaa;
 }
 
-#editor-tabs {
-  margin-bottom: 0;
+.menuBadge {
+  padding-top: 11px;
 }
+
+/* ----- Toolbars ----- */
 
 #main-toolbar {
   margin-bottom: 15px;
@@ -18,6 +20,22 @@ body {
 #editor-toolbar {
   margin-bottom: 7px;
 }
+
+.btn-row .btn-toolbar {
+  margin: 0;
+}
+
+/* ----- Tabs ----- */
+
+#editor-tabs {
+  margin-bottom: 0;
+}
+
+.nav-tabs button.close {
+  margin: -3px 0 0 3px;
+}
+
+/* ----- Editors ----- */
 
 #main-editor-area {
   padding: 7px 18px;
@@ -34,14 +52,6 @@ body {
   border-bottom-right-radius: 4px;
   
   margin-bottom: 9px;
-}
-
-#repl CodeMirror {
-  height: 1.5em;
-}
-
-.nav-tabs button.close {
-  margin: -3px 0 0 3px;
 }
 
 .editor {
@@ -84,6 +94,12 @@ body {
 
 .CodeMirror-nonmatchingbracket {
   color: #f89406 !important; /* Bootstrap accent - orange */    
+}
+
+/* ----- REPL ----- */
+
+#repl CodeMirror {
+  height: 1.5em;
 }
 
 #repl {
@@ -141,9 +157,7 @@ body {
   margin-left: 14px;
 }
 
-.menuBadge {
-  padding-top: 11px;
-}
+/* ----- Output box ----- */
 
 #outputBoxHeader {
   height: 24px;
@@ -155,8 +169,9 @@ body {
   margin-bottom: 0;
 }
 
-.btn-row .btn-toolbar {
-  margin: 0;
+#popup-outputBox {
+  width: 370px;
+  height: 235px;
 }
 
 .pixelBox td {

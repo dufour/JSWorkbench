@@ -1,16 +1,16 @@
-function jswb_clearSession() {
+jswb.clearSession = function () {
     localStorage.removeItem("jswb");
-}
+};
 
-function jswb_saveSession() {
-    var state = jswb_serializeState();
+jswb.saveSession = function () {
+    var state = jswb.serializeState();
     localStorage["jswb"] = JSON.stringify(state);
-}
+};
 
-function jswb_loadSession() {
+jswb.loadSession = function () {
     // Restore tabs
     var state = localStorage["jswb"];
     if (state) {
-        jswb_restoreState(JSON.parse(state));
+        jswb.restoreState(JSON.parse(state));
     }
-}
+};

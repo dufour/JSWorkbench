@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>JS Workbench - Output</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="include/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="jsworkbench.css" rel="stylesheet">
+    <script src="include/jquery.js"></script>
+    <script src="include/bootstrap/js/bootstrap.js"></script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            jswb.moveOutput(opener, window, $);
+        });
+    </script>
+    
+    <style text="text/css">
+      body {
+        padding: 5px;
+      }
+      
+      div.row {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body onunload="jswb.attachOutput(window)">
+    <div class="row">
+      <div id="popup-outputBoxHeader">Output: <a href="#"><i class="icon-remove" style="float:right"></i></a></div>
+      <div id="popupOutputArea">
+        <div id="popup-outputBox" class="well outputBox"></div>
+        
+        <div class="btn-toolbar">
+          <div class="btn-group dropup">
+            <a id="popup-btnOutputKind" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+              <span class="btnLabel" data-jswb-role="outputKindLabel">No output</span>
+              <span class="caret"></span>
+            </a>
+            <ul id="popup-dropdownOutputKind" class="dropdown-menu" data-jswb-role="outputKindDropdown">
+              <li><a href="#">No output</a></li>
+            </ul>
+          </div>
+          <div class="btn-group">
+            <button class="btn" onclick="jswb.clearOutput();">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

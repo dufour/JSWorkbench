@@ -61,13 +61,13 @@
         <div class="span12">
           <div id="main-toolbar" class="btn-toolbar">
             <div class="btn-group">
-              <a class="btn btn-small" href="#" onclick="jswb_loadSession();">Restore session</a>
-              <a class="btn btn-small" href="#" onclick="jswb_saveSession();">Save session</a>
-              <a class="btn btn-small" href="#" onclick="jswb_clearSession();">Clear saved session</a>
+              <a class="btn btn-small" href="#" onclick="jswb.loadSession();">Restore session</a>
+              <a class="btn btn-small" href="#" onclick="jswb.saveSession();">Save session</a>
+              <a class="btn btn-small" href="#" onclick="jswb.clearSession();">Clear saved session</a>
             </div>
             <div class="btn-group">
-              <a class="btn" href="#" onclick="jswb_loadProject();"><img src="icons/icon-project.png"> Open</a>
-              <a class="btn" href="#" onclick="jswb_saveProject();"><img src="icons/icon-project.png"> Save</a>
+              <a class="btn" href="#" onclick="jswb.loadProject();"><img src="icons/icon-project.png"> Open</a>
+              <a class="btn" href="#" onclick="jswb.saveProject();"><img src="icons/icon-project.png"> Save</a>
             </div>
           </div>
         </div>
@@ -75,21 +75,21 @@
 
       <!-- Main area (editors) -->
       <div class="row">
-        <div class="span8">
+        <div id="editorColumn" class="span8">
           <!-- Tab bar -->
           <ul id="editor-tabs" class="nav nav-tabs"></ul>
           <!-- Toolbar -->
           <div id="main-editor-area">
             <div id="editor-toolbar" class="btn-toolbar">
               <div class="btn-group">
-                <a class="btn" href="#" onclick="jswb_newTab();"><i class="icon-file"></i></a>
+                <a class="btn" href="#" onclick="jswb.newTab();"><i class="icon-file"></i></a>
                 <a class="btn" href="#" onclick="doOpen();"><i class="icon-folder-open"></i></a>
                 <a class="btn" href="#" onclick="doSave();"><i class="icon-download-alt"></i></a>
               </div>
 
               <div class="btn-group">
-                <a class="btn" href="#" onclick="jswb_undo(window.editor);"><img src="icons/icon-undo.png"/></a>
-                <a class="btn" href="#" onclick="jswb_redo(window.editor);"><img src="icons/icon-redo.png"/></a>
+                <a class="btn" href="#" onclick="jswb.undo(jswb.getCurrentTab().editor);"><img src="icons/icon-undo.png"/></a>
+                <a class="btn" href="#" onclick="jswb.redo(jswb.getCurrentTab().editor);"><img src="icons/icon-redo.png"/></a>
               </div>
             </div>
             <!-- Editors -->
@@ -110,21 +110,7 @@
               <a href="#" id="btnOpenFile" class="btn btn-primary disabled">Open</a>
             </div>
           </div>
-        </div>
-
-        <!-- Output -->
-        <div class="span4">
-          <div id="outputBoxHeader">Output:</div>
-          <div id="outputBox" class="well"></div>
-        </div>
-      </div>
-
-      <div class="row">
-      </div>
-
-      <!-- Buttons -->
-      <div class="row btn-row">
-        <div class="span8">
+          
           <div class="btn-toolbar">
             <div class="btn-group">
               <button id="btn-run" class="btn btn-primary" onclick="doRunAll();">Run all</button>
@@ -139,32 +125,40 @@
             <div class="btn-group">
               <button class="btn" onclick="doClear();">Clear</button>
             </div>
-          </div>
+          </div>          
         </div>
 
-        <div class="span4">
-          <div class="btn-toolbar">
-            <div class="btn-group">
-              <a id="btnOutputKind" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                <span class="btnLabel">No output</span>
-                <span class="caret"></span>
-              </a>
-              <ul id="dropdownOutputKind" class="dropdown-menu">
-                <li><a href="#">No output</a></li>
-              </ul>
-            </div>
-            <div class="btn-group">
-              <button id="btnClearOutput" class="btn" onclick="jswb_clearOutput();">Clear</button>
+        <!-- Output -->
+        <div id="outputColumn" class="span4">
+          <div id="outputBoxHeader">Output: <a href="#" onclick="jswb.detachOutput();"><i class="icon-share" style="float:right"></i></a></div>
+
+          <div id="mainOutputArea">
+            <div id="outputBox" class="well outputBox"></div>
+            
+            <div class="btn-toolbar">
+              <div class="btn-group">
+                <a id="btnOutputKind" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                  <span class="btnLabel" data-jswb-role="outputKindLabel">No output</span>
+                  <span class="caret"></span>
+                </a>
+                <ul id="dropdownOutputKind" class="dropdown-menu" data-jswb-role="outputKindDropdown">
+                  <li><a href="#">No output</a></li>
+                </ul>
+              </div>
+              <div class="btn-group">
+                <button class="btn" onclick="jswb.clearOutput();">Clear</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      
       <hr/>
 
       <!-- Console -->
       <div class="row">
         <div class="span12">Console:
-          <pre id="repl"><div id="output"></div></pre>
+          <pre id="repl"><div id="console"></div></pre>
         </div>
       </div>
     </div>
@@ -179,26 +173,47 @@
     <script src="include/polyfills/BlobBuilder.js"></script>
     <script src="include/polyfills/FileSaver.js"></script>
 
-    <script src="include/actions.js"></script>
-    <script src="include/editors.js"></script>
-    <script src="include/builtins.js"></script>
-    <script src="include/storage.js"></script>
     <script type="text/javascript">
         window.jswb = {
-            builtins: {}
+            builtins: {},
+
+            // state
+            tabs: [],
+            currentTab: undefined,
+            currentConsoleLine: undefined,
+            currentOutput: undefined,  
+            outputPlugins: [],          
+
+            // Elements
+            alerts: undefined,
+            repl: undefined,
+            console: undefined,
+            output: undefined,
         };
         
+        function disableHashLinks() {
+            $("a").each(function () {
+                if (this.onclick && (this.href === '#' || this.href === document.baseURI + "#")) {
+                    var oldHandler = this.onclick;
+                    this.onclick = (function (h) {
+                        return function (event) {
+                            event.preventDefault();
+                            h(event);
+                        };
+                    })(oldHandler);
+                }
+            });
+        }
+
         $(document).ready(function() {
             checkBrowserFeatures();
 
-            window.alerts = document.getElementById("alerts");
-            window.repl   = createREPL(document.getElementById("repl"));
-            window.output = document.getElementById("output");
+            jswb.alerts = document.getElementById("alerts");
+            jswb.repl   = createREPL(document.getElementById("repl"));
+            jswb.console = document.getElementById("console");
+            jswb.output = document.getElementById("outputBox");
 
-            window.tabs = [];
-            window.currentTab = undefined;
-
-            jswb_newTab();
+            jswb.newTab();
 
             $("#repl").click(focusREPL);
 
@@ -207,6 +222,8 @@
                 document.getElementById('fileInputForm').innerHTML = document.getElementById('fileInputForm').innerHTML;
                 $("#btnOpenFile").addClass("disabled");
             });
+
+            // disableHashLinks();
         });
 
         function checkBrowserFeatures() {
@@ -227,8 +244,8 @@
         }
 
         function doOpen() {
-            var tab = jswb_currentTab();
-            jswb_load(tab.editor);
+            var tab = jswb.getCurrentTab();
+            jswb.load(tab.editor);
         }
 
         function onFileSelected() {
@@ -236,8 +253,8 @@
         }
 
         function doSave() {
-            var tab = jswb_currentTab();
-            if (tab) jswb_save(tab.editor);
+            var tab = jswb.getCurrentTab();
+            if (tab) jswb.save(tab.editor);
         }
 
         function jswb_internal_run(tabs, mode) {
@@ -248,9 +265,9 @@
                     var ed = tab.editor;
                     var script = mode === "selection" ? ed.getSelection() : ed.getValue();
                     try {
-                        jswb_runScript(script);
+                        jswb.runScript(script);
                     } catch (e) {
-                        jswb_reportError(tab.title + " - " + e);
+                        jswb.reportError(tab.title + " - " + e);
                         break;
                     }
                 }
@@ -259,25 +276,29 @@
         }
 
         function doRunAll() {
-            jswb_internal_run(tabs);
+            jswb_internal_run(jswb.tabs);
         }
 
         function doRunCurrent() {
-           jswb_internal_run([jswb_currentTab()]);
+           jswb_internal_run([jswb.getCurrentTab()]);
         }
 
         function doRunSelection() {
-            jswb_internal_run([jswb_currentTab()], "selection");
+            jswb_internal_run([jswb.getCurrentTab()], "selection");
         }
 
         function doClear() {
-            jswb_clearConsole();
+            jswb.clearConsole();
         }
 
         function focusREPL() {
-            window.repl.focus();
+            jswb.repl.focus();
         }
     </script>
+    <script src="include/actions.js"></script>
+    <script src="include/editors.js"></script>
+    <script src="include/builtins.js"></script>
+    <script src="include/storage.js"></script>
     <script src="include/output.js"></script>
   </body>
 </html>

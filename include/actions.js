@@ -6,12 +6,12 @@ $(document).ready(function() {
     }
 });
 
-function jswb_currentTab() {
-    if (window.currentTab) {
-        return window.tabs[window.currentTab];
+jswb.getCurrentTab = function () {
+    if (jswb.currentTab) {
+        return jswb.tabs[jswb.currentTab];
     }
     return undefined;
-}
+};
 
 function jswb_internal_closeTab(id) {
     // Remove tab
@@ -33,31 +33,31 @@ function jswb_internal_closeTab(id) {
     $("#" + id).remove();
     
     // Clear data
-    delete window.tabs[id];
+    delete jswb.tabs[id];
 }
 
-function jswb_closeAllTabs() {
-    var tabs = window.tabs;
+jswb.closeAllTabs = function () {
+    var tabs = jswb.tabs;
     for (var i = 0; i < tabs.length; i++) {
         var tab = tabs[i];
         if (tab) {
             jswb_internal_closeTab(tab.id);
         }
     }
-    window.tabs = [];
-}
+    jswb.tabs = [];
+};
 
-function jswb_closeTab(id) {
+jswb.closeTab = function (id) {
     jswb_internal_closeTab(id);
     
     // If no tabs remain, create a new one
     if ($("#editor-tabs").children("li").length === 0) {        
-        jswb_newTab();
+        jswb.newTab();
     }
-}
+};
 
 function jswb_internal_nextTabID() {
-    var tabs = window.tabs;
+    var tabs = jswb.tabs;
     var i = 1;
     while (tabs[i]) i++;
     return i;
@@ -67,7 +67,7 @@ function jswb_internal_makeCloseButton() {
     return $("<button/>").addClass("close").append("&times;");
 }
 
-function jswb_newTab(title, id) {
+jswb.newTab = function (title, id) {
     if (id === undefined) {
         id = jswb_internal_nextTabID();
     }
@@ -82,7 +82,7 @@ function jswb_newTab(title, id) {
         return function (event) {
             event.stopPropagation();
             event.preventDefault();
-            jswb_closeTab(tabID);
+            jswb.closeTab(tabID);
         };
     })(id));
     
@@ -99,15 +99,15 @@ function jswb_newTab(title, id) {
     var link = $('<a data-toggle="tab"/>').attr("id", "tab_" + id).attr("href", "#" + id).append(titleSpan).append(close_button);
     link.on('shown', (function (tabID) {
         return function (event) {
-            window.currentTab = tabID;
+            jswb.currentTab = tabID;
         };
     })(id));
     link.dblclick((function (title, tabID) {
         return function (event) {
-            var newTitle = prompt("Enter a new name for '" + window.tabs[tabID].title + "'");
+            var newTitle = prompt("Enter a new name for '" + jswb.tabs[tabID].title + "'");
             if (newTitle !== null) {
                 title.text(newTitle);
-                window.tabs[tabID].title = newTitle;
+                jswb.tabs[tabID].title = newTitle;
             }
         };
     })(titleSpan, id));
@@ -129,17 +129,17 @@ function jswb_newTab(title, id) {
         editor: editor,
         title: title
     };
-    window.tabs[id] = tab;
+    jswb.tabs[id] = tab;
     editor.tab = tab;
     
     // Activate new tab          
     $("#tab_" + id).tab("show");
     editor.refresh();
     
-    return window.tabs[id];
-}
+    return jswb.tabs[id];
+};
 
-function jswb_addAlert(text, title, kind) {
+jswb.addAlert = function (text, title, kind) {
     var alertDiv = $("<div/>").addClass("alert");
     if (kind) alertDiv.addClass("alert-" + kind);
     alertDiv.text(text);
@@ -147,39 +147,39 @@ function jswb_addAlert(text, title, kind) {
         alertDiv.prepend($("<strong/>").text(title), " ");
     }
     alertDiv.prepend('<button class="close" data-dismiss="alert">&times;</button>');
-    $(window.alerts).append(alertDiv);
-}
+    $(jswb.alerts).append(alertDiv);
+};
 
-function jswb_reportError(text, title) {
+jswb.reportError = function (text, title) {
     if (title === undefined) title = "Error!";
-    jswb_addAlert(text, title, "error"); 
-}
+    jswb.addAlert(text, title, "error"); 
+};
 
-function jswb_reportWarning(text, title) {
+jswb.reportWarning = function (text, title) {
     if (title === undefined) title = "Warning!";
-    jswb_addAlert(text, title); 
-}
+    jswb.addAlert(text, title); 
+};
 
-function jswb_addLineToConsole(line, cssClass) {
-    if (window.currentConsoleLine) {
-        window.currentConsoleLine = undefined;
-        $(window.output).append("\n");
+jswb.addLineToConsole = function (line, cssClass) {
+    if (jswb.currentConsoleLine) {
+        jswb.currentConsoleLine = undefined;
+        $(jswb.console).append("\n");
     }
     if (!cssClass) cssClass = "console-output";
-    $(window.output).append($("<span/>").addClass(cssClass).text(line), "\n");
-}
+    $(jswb.console).append($("<span/>").addClass(cssClass).text(line), "\n");
+};
 
-function jswb_runScript(s) {
+jswb.runScript = function (s) {
     var _eval = eval; // Use indirect eval to simulate top-level execution
     return _eval("with (jswb.builtins) {" + s + "}");  // FIXME: insecure!
-}
+};
 
-function jswb_clearConsole() {
-    $(window.output).empty();
-    window.repl.setValue("");
-}
+jswb.clearConsole = function () {
+    $(jswb.console).empty();
+    jswb.repl.setValue("");
+};
 
-function jswb_loadFile(cm, f) {
+jswb.loadFile = function (cm, f) {
     if (!cm) return;
     
     jswb_internal_readTextFile((function(theEditor) {
@@ -187,23 +187,23 @@ function jswb_loadFile(cm, f) {
             theEditor.setValue(contents);
        };
     })(cm));
-}
+};
 
-function jswb_undo(cm) {
+jswb.undo = function (cm) {
     cm.undo();
-}
+};
 
-function jswb_redo(cm) {
+jswb.redo = function (cm) {
     cm.redo();
-}
+};
 
 function jswb_internal_readTextFile(f, callback) {
     if (!Modernizr.filereader) {
-        jswb_reportError("File is reader not supported by the browser");
+        jswb.reportError("File is reader not supported by the browser");
     } else {
         var reader = new FileReader();
         reader.onerror = function (e) {
-            jswb_reportError("File read failed");
+            jswb.reportError("File read failed");
         };
         reader.onload = function(e) {
             callback(e.target.result);
@@ -225,7 +225,7 @@ function jswb_internal_saveFile(contents, name) {
 
 function jswb_internal_openFile(callback) {
     if (!Modernizr.filereader) {
-        jswb_reportError("File is reader not supported by the browser");
+        jswb.reportError("File is reader not supported by the browser");
     } else {
         $("#btnOpenFile").click((function (cb) {
             return function (event) {
@@ -244,24 +244,24 @@ function jswb_internal_openFile(callback) {
 }
 
 
-function jswb_save(cm) {
+jswb.save = function (cm) {
     jswb_internal_saveFile(cm.getValue(), cm.tab.title + ".js");
-}
+};
 
-function jswb_load(cm) {   
+jswb.load = function (cm) {
     jswb_internal_openFile((function (editor) {
         return function (file) {
-            jswb_loadFile(editor, file);
+            jswb.loadFile(editor, file);
         };
     })(cm));
-}
+};
 
-function jswb_serializeState() {
+jswb.serializeState = function () {
     var state = {
         tabs: [],
         console: undefined
     };
-    var tabs = window.tabs;
+    var tabs = jswb.tabs;
     for (var i = 0; i < tabs.length; i++) {
         var tab = tabs[i];
         if (tab) {
@@ -273,44 +273,44 @@ function jswb_serializeState() {
         }
     }
     
-    state.console = window.output.innerHTML;
+    state.console = jswb.console.innerHTML;
     
     return state;
-}
+};
 
-function jswb_restoreState(state) {
+jswb.restoreState = function (state) {
     if (state === undefined) return;
     
     try {
         if (state.tabs) {
             var tabs = state.tabs;
-            jswb_closeAllTabs();
+            jswb.closeAllTabs();
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
-                var newTab = jswb_newTab(tab.title, tab.id);
+                var newTab = jswb.newTab(tab.title, tab.id);
                 newTab.editor.setValue(tab.text);
             }
-            if (window.tabs.length === 0) {
-                jswb_newTab();
+            if (jswb.tabs.length === 0) {
+                jswb.newTab();
             }
         }
         
         // Restore console
-        window.output.innerHTML = state.console || "";
+        jswb.console.innerHTML = state.console || "";
     } catch (e) {
-        jswb_reportError("Unable to restore state: " + e);
+        jswb.reportError("Unable to restore state: " + e);
     }
-}
+};
 
-function jswb_saveProject(cm) {
-    var state = jswb_serializeState();
+jswb.saveProject = function (cm) {
+    var state = jswb.serializeState();
     jswb_internal_saveFile(JSON.stringify(state), "project.jswb");
-}
+};
 
-function jswb_loadProject(cm) {
+jswb.loadProject = function (cm) {
     jswb_internal_openFile(function (file) {
         jswb_internal_readTextFile(file, function (contents) {
-            jswb_restoreState(JSON.parse(contents));
+            jswb.restoreState(JSON.parse(contents));
         });
     });
-}
+};

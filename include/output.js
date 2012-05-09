@@ -1,4 +1,6 @@
-jswb.outputPlugins = jswb.outputPlugin || [];
+jswb.outputPlugins = jswb.outputPlugins || [];
+
+// ----- Plugins ------
 
 var NoOutput = {
     label: "No output",
@@ -12,12 +14,12 @@ var PlainTextOutput = {
     draw: function (container) {
         $(container).append($("<pre/>").attr("style", "height: 100%; border: none; overflow: scroll;"));
     },
-    clear: function () {
-        $("#outputBox > pre").empty();
+    clear: function (container) {
+        $(container).children("pre").empty();
     },
     builtins: {
         println: function (s) {
-            $("#outputBox > pre").append($("<span/>").text(s), "\n");
+            $(jswb.output).children("pre").append($("<span/>").text(s), "\n");
         },
     },
 };
@@ -25,8 +27,7 @@ jswb.outputPlugins.push(PlainTextOutput);
 
 var PixelGridOutput = {
     label: "Grid",
-    draw: function (container) {
-        this.container = container;
+    draw: function (container) {    
         var table = $("<table/>").addClass("pixelBox");
         var rows = 10;
         var columns = 10;
@@ -39,20 +40,20 @@ var PixelGridOutput = {
         }
         $(container).append(table);
     },
-    clear: function () {
-        $(this.container).empty();
-        this.draw(this.container);
+    clear: function (container) {
+        $(container).empty();
+        this.draw(container);
     },
     builtins: {
         setPixel: function (r, c, color) {
             if (!color) color = "black";
-            $("#pixel_" + r + "_" + c).css('background-color', color);
+            $("#pixel_" + r + "_" + c, jswb.output).css('background-color', color);
         },
         clearPixel: function (r, c) {
-            $("#pixel_" + r + "_" + c).css('background-color', 'transparent');
+            $("#pixel_" + r + "_" + c, jswb.output).css('background-color', 'transparent');
         },
         resetPixels: function () {
-            PixelGridOutput.clear();
+            PixelGridOutput.clear(jswb.output);
         },
         ROWS: 10,
         COLUMNS: 10,
@@ -60,38 +61,83 @@ var PixelGridOutput = {
 };
 jswb.outputPlugins.push(PixelGridOutput);
 
-function jswb_clearOutput() {
+jswb.clearOutput = function () {
     var p = jswb.currentOutput;
     if (p && p.clear) {
-        p.clear();
-    } else {
-        $("#outputBox").empty();
+        p.clear(jswb.output);
+    } else if (jswb.output) {
+        $(jswb.output).empty();
     }
-}
+};
 
-function jswb_onOutputKindClicked(outputPlugin) {
-    $("#btnOutputKind > span.btnLabel").text(outputPlugin.label);
+jswb.onOutputKindClicked = function (outputPlugin) {
+    var container = jswb.output;
+    $("[data-jswb-role=outputKindLabel]", container.parentNode).text(outputPlugin.label);
     jswb.currentOutput = outputPlugin;
     jswb.builtins = outputPlugin.builtins || {};
     
-    var container = document.getElementById("outputBox");
+    
     $(container).empty();
     if (outputPlugin.draw) {        
         outputPlugin.draw(container);
     }
+};
+
+jswb.moveOutput = function (srcWindow, dstWindow, $) {
+    var srcDocument = srcWindow.document;
+    var dstDocument = dstWindow.document;
+
+    // Move output box
+    var newOutput = $(".outputBox", dstDocument).get(0);
+    newOutput.innerHTML = jswb.output.innerHTML;
+    jswb.output = newOutput;
+
+    // Copy active plugin name
+    var label_selector = "[data-jswb-role=outputKindLabel]";
+    $(label_selector, dstDocument).text($(label_selector, srcDocument).text());
+
+    // Move dropdown items
+    var dropdown_selector = "[data-jswb-role=outputKindDropdown]";
+    var dropdown = $(dropdown_selector, dstDocument).empty();
+    $(dropdown_selector + " > li", srcDocument).remove().appendTo(dropdown);
+
+    // $("[data-jswb-role=outputKindDropdown] > li", srcDocument).remove().appendTo($("#popup-dropdownOutputKind", dstDocument).empty());
+
+    
+    // $("[data-jswb-role=outputKindDropdown] > li", srcDocument).remove().appendTo(dropdown);
 }
 
-$(document).ready(function () {
-    var dropdown = $("#dropdownOutputKind").empty();
+jswb.detachOutput = function () {
+    var popup = window.open("popup.html", "", "width=420,height=375,location=no,status=no,toolbar=no,menubar=no");
+    popup.focus();
+    popup.jswb = jswb;
+
+    $("#outputColumn").hide();
+    $("#editorColumn").removeClass("span8").addClass("span12");
+};
+
+jswb.attachOutput = function (popup) {
+    jswb.moveOutput(popup, popup.opener, popup.$);
+
+    $("#outputColumn").show();
+    $("#editorColumn").removeClass("span12").addClass("span8");
+};
+
+function jswb_internal_populateOutputKinds(container) {
+    var dropdown = $(container).empty();
     for (var i = 0; i < jswb.outputPlugins.length; i++) {
         var p = jswb.outputPlugins[i];
         var link = $('<a href="#"/>').click((function (thePlugin) {
             return function (event) {
                 event.preventDefault(); // Don't navigate to "#"
-                jswb_onOutputKindClicked(thePlugin);
+                jswb.onOutputKindClicked(thePlugin);
             };
         })(p)).text(p.label);
         dropdown.append($("<li/>").append(link));
     }
-    jswb.currentOutput = NoOutput;
+}
+
+$(document).ready(function () {
+    jswb_internal_populateOutputKinds(document.getElementById("dropdownOutputKind"));
+    jswb.onOutputKindClicked(NoOutput);
 });
