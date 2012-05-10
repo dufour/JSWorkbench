@@ -39,6 +39,51 @@ function createCodeEditor(node) {
 //                                       REPL
 // ================================================================================
 
+function REPLHistoryManager(cm) {
+    this.editor = cm;
+    this.history = [];
+    this.pos = 0;
+    this.limit = 100; // TODO: make this configurable
+    this.currentLine = undefined;
+}
+
+REPLHistoryManager.prototype.resetPos = function () {
+    this.pos = this.history.length;
+    this.currentLine = undefined;
+};
+
+REPLHistoryManager.prototype.add = function (line) {
+    this.history.push(line);
+    while (this.history.length > this.limit) {
+        this.history.shift();
+    }
+    this.resetPos();
+};
+
+REPLHistoryManager.prototype.previous = function () {
+    var index = this.pos - 1;
+    if (this.pos === this.history.length) {
+        // Remember the current line to be able to restore it later, if needed
+        this.currentLine = this.editor.getValue();
+    }
+    if (index >= 0) {
+        // Restore previous history item
+        this.editor.setValue(this.history[index]);
+        this.pos = index;
+    }
+};
+
+REPLHistoryManager.prototype.next = function () {
+    var index = this.pos + 1;
+    if (index < this.history.length) {
+        this.editor.setValue(this.history[index]);
+        this.pos = index;
+    }  else if (index === this.history.length) {
+        this.editor.setValue(this.currentLine);
+        this.resetPos();
+    }
+};
+
 function createREPL(node) {
     var options = {
         mode:  "javascript",
@@ -46,7 +91,7 @@ function createREPL(node) {
         lineNumbers:  false,   // Show line numbers
         matchBrackets: true,
         extraKeys: {
-            "Ctrl-L": function (cm) { jswb.clearConsole(); editor.currentLine = undefined; },
+            "Ctrl-L": function (cm) { jswb.clearConsole(); cm.jswb.history.resetPos(); },
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
                 var script = cm.getValue();
@@ -64,36 +109,18 @@ function createREPL(node) {
                     } catch (error) {
                         jswb.addLineToConsole(error, "console-error label label-important");
                     }
-                    cm.history.push(script);
-                    while (cm.history.length > cm.historySize) {
-                        cm.history.shift();
-                    }
-                    cm.historyIndex = cm.history.length;
-                    editor.currentLine = undefined;
+                    cm.jswb.history.add(script);
                     cm.busy = false;
                 }
                 
                 return true;
             },
             "Up": function (cm) {
-                if (editor.currentLine === undefined) editor.currentLine = editor.getValue();
-                var index =  cm.historyIndex - 1;
-                if (index >= 0 && index < cm.history.length) {
-                    cm.setValue(cm.history[index]);
-                    cm.historyIndex = index;
-                }
+                cm.jswb.history.previous();
                 return true;
             },
             "Down": function (cm) {
-                var index =  cm.historyIndex + 1;
-                if (index >= 0 && index < cm.history.length) {
-                    cm.setValue(cm.history[index]);
-                    cm.historyIndex = index;
-                } else {
-                    cm.setValue(editor.currentLine);
-                    cm.historyIndex = cm.history.length;
-                    editor.currentLine = undefined;
-                }
+                cm.jswb.history.next();
                 return true;
             }
         },
@@ -105,10 +132,8 @@ function createREPL(node) {
         },
     };
     var editor = CodeMirror(node, options);
-    editor.history = [];
-    editor.historySize = 100; // TODO: make this configurable
-    editor.historyIndex = 0;
-    editor.currentLine = undefined;
+    editor.jswb = {};
+    editor.jswb.history = new REPLHistoryManager(editor);
     editor.busy = false;
     return editor;
 }
