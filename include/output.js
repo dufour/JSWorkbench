@@ -28,9 +28,11 @@ jswb.outputPlugins.push(PlainTextOutput);
 var PixelGridOutput = {
     label: "Grid",
     draw: function (container) {    
-        var table = $("<table/>").addClass("pixelBox");
         var rows = 10;
         var columns = 10;
+        var ROW_HEIGHT = 10;
+        var BORDER_WIDTH = 1;
+        var table = $('<table/>').addClass("pixelBox").css("height", (rows * ROW_HEIGHT + rows * BORDER_WIDTH) + "px");
         for (var i = 0; i < rows; i++) {
             var row = $("<tr/>");
             for (var j = 0; j < columns; j++) {
@@ -100,11 +102,6 @@ jswb.moveOutput = function (srcWindow, dstWindow, $) {
     var dropdown_selector = "[data-jswb-role=outputKindDropdown]";
     var dropdown = $(dropdown_selector, dstDocument).empty();
     $(dropdown_selector + " > li", srcDocument).remove().appendTo(dropdown);
-
-    // $("[data-jswb-role=outputKindDropdown] > li", srcDocument).remove().appendTo($("#popup-dropdownOutputKind", dstDocument).empty());
-
-    
-    // $("[data-jswb-role=outputKindDropdown] > li", srcDocument).remove().appendTo(dropdown);
 }
 
 jswb.detachOutput = function () {
