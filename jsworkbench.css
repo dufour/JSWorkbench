@@ -174,8 +174,16 @@ body {
   height: 235px;
 }
 
+table.pixelBox {
+  padding: 0;
+  margin: 0;
+  border-collapse: collapse;
+}
+
 .pixelBox td {
-  width: 5px;
-  height: 5px;
+  padding: 0;
+  margin: 0;
+  width: 10px;
+  height: 10px;
   border: 1px solid #a0a0a0;
 }
