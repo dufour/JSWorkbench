@@ -49,6 +49,7 @@ function REPLHistoryManager(cm) {
 
 REPLHistoryManager.prototype.setEditorValue = function (v) {
     this.editor.setValue(v);
+    this.editor.refresh();
     CodeMirror.commands.goLineEnd(this.editor);
 };
 
@@ -96,12 +97,13 @@ function createREPL(node) {
         lineNumbers:  false,   // Show line numbers
         matchBrackets: true,
         extraKeys: {
+            "Ctrl-C": function (cm) { cm.setValue(""); cm.refresh(); cm.jswb.history.resetPos(); },
             "Ctrl-L": function (cm) { jswb.clearConsole(); cm.jswb.history.resetPos(); },
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
                 var script = cm.getValue();
                 cm.setValue("");
-                cm.refresh();                           
+                cm.refresh();                          
                 
                 jswb.addLineToConsole(script, "console-line");
                 if (script) {
