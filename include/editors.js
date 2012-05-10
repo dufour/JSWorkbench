@@ -64,11 +64,35 @@ function createREPL(node) {
                     } catch (error) {
                         jswb.addLineToConsole(error, "console-error label label-important");
                     }
+                    cm.history.push(script);
+                    while (cm.history.length > cm.historySize) {
+                        cm.history.shift();
+                    }
+                    cm.historyIndex = cm.history.length;
                     cm.busy = false;
                 }
                 
                 return true;
             },
+            "Up": function (cm) {
+                var index =  cm.historyIndex - 1;
+                if (index >= 0 && index < cm.history.length) {
+                    cm.setValue(cm.history[index]);
+                    cm.historyIndex = index;
+                }
+                return true;
+            },
+            "Down": function (cm) {
+                var index =  cm.historyIndex + 1;
+                if (index >= 0 && index < cm.history.length) {
+                    cm.setValue(cm.history[index]);
+                    cm.historyIndex = index;
+                } else {
+                    cm.setValue("");
+                    cm.historyIndex = cm.history.length;
+                }
+                return true;
+            }
         },
         onKeyEvent: function (cm, event) {
             if (cm.busy) {
@@ -78,6 +102,9 @@ function createREPL(node) {
         },
     };
     var editor = CodeMirror(node, options);
+    editor.history = [];
+    editor.historySize = 100; // TODO: make this configurable
+    editor.historyIndex = 0;
     editor.busy = false;
     return editor;
 }
