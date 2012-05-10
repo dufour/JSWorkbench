@@ -39,6 +39,56 @@ function createCodeEditor(node) {
 //                                       REPL
 // ================================================================================
 
+function REPLHistoryManager(cm) {
+    this.editor = cm;
+    this.history = [];
+    this.pos = 0;
+    this.limit = 100; // TODO: make this configurable
+    this.currentLine = undefined;
+}
+
+REPLHistoryManager.prototype.setEditorValue = function (v) {
+    this.editor.setValue(v);
+    CodeMirror.commands.goLineEnd(this.editor);
+};
+
+REPLHistoryManager.prototype.resetPos = function () {
+    this.pos = this.history.length;
+    this.currentLine = undefined;
+};
+
+REPLHistoryManager.prototype.add = function (line) {
+    this.history.push(line);
+    while (this.history.length > this.limit) {
+        this.history.shift();
+    }
+    this.resetPos();
+};
+
+REPLHistoryManager.prototype.previous = function () {
+    var index = this.pos - 1;
+    if (this.pos === this.history.length) {
+        // Remember the current line to be able to restore it later, if needed
+        this.currentLine = this.editor.getValue();
+    }
+    if (index >= 0) {
+        // Restore previous history item
+        this.setEditorValue(this.history[index]);
+        this.pos = index;
+    }
+};
+
+REPLHistoryManager.prototype.next = function () {
+    var index = this.pos + 1;
+    if (index < this.history.length) {
+        this.setEditorValue(this.history[index]);
+        this.pos = index;
+    }  else if (index === this.history.length) {
+        this.setEditorValue(this.currentLine);
+        this.resetPos();
+    }
+};
+
 function createREPL(node) {
     var options = {
         mode:  "javascript",
@@ -46,7 +96,7 @@ function createREPL(node) {
         lineNumbers:  false,   // Show line numbers
         matchBrackets: true,
         extraKeys: {
-            "Ctrl-L": function (cm) { jswb.clearConsole(); },
+            "Ctrl-L": function (cm) { jswb.clearConsole(); cm.jswb.history.resetPos(); },
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
                 var script = cm.getValue();
@@ -64,11 +114,20 @@ function createREPL(node) {
                     } catch (error) {
                         jswb.addLineToConsole(error, "console-error label label-important");
                     }
+                    cm.jswb.history.add(script);
                     cm.busy = false;
                 }
                 
                 return true;
             },
+            "Up": function (cm) {
+                cm.jswb.history.previous();
+                return true;
+            },
+            "Down": function (cm) {
+                cm.jswb.history.next();
+                return true;
+            }
         },
         onKeyEvent: function (cm, event) {
             if (cm.busy) {
@@ -78,6 +137,8 @@ function createREPL(node) {
         },
     };
     var editor = CodeMirror(node, options);
+    editor.jswb = {};
+    editor.jswb.history = new REPLHistoryManager(editor);
     editor.busy = false;
     return editor;
 }
