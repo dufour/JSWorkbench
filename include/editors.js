@@ -47,6 +47,11 @@ function REPLHistoryManager(cm) {
     this.currentLine = undefined;
 }
 
+REPLHistoryManager.prototype.setEditorValue = function (v) {
+    this.editor.setValue(v);
+    CodeMirror.commands.goLineEnd(this.editor);
+};
+
 REPLHistoryManager.prototype.resetPos = function () {
     this.pos = this.history.length;
     this.currentLine = undefined;
@@ -68,7 +73,7 @@ REPLHistoryManager.prototype.previous = function () {
     }
     if (index >= 0) {
         // Restore previous history item
-        this.editor.setValue(this.history[index]);
+        this.setEditorValue(this.history[index]);
         this.pos = index;
     }
 };
@@ -76,10 +81,10 @@ REPLHistoryManager.prototype.previous = function () {
 REPLHistoryManager.prototype.next = function () {
     var index = this.pos + 1;
     if (index < this.history.length) {
-        this.editor.setValue(this.history[index]);
+        this.setEditorValue(this.history[index]);
         this.pos = index;
     }  else if (index === this.history.length) {
-        this.editor.setValue(this.currentLine);
+        this.setEditorValue(this.currentLine);
         this.resetPos();
     }
 };
