@@ -46,7 +46,7 @@ function createREPL(node) {
         lineNumbers:  false,   // Show line numbers
         matchBrackets: true,
         extraKeys: {
-            "Ctrl-L": function (cm) { jswb.clearConsole(); },
+            "Ctrl-L": function (cm) { jswb.clearConsole(); editor.currentLine = undefined; },
             "Ctrl-Enter": function(cm) { cm.autoInsertBraces(cm)},
             "Enter": function(cm) {
                 var script = cm.getValue();
@@ -69,12 +69,14 @@ function createREPL(node) {
                         cm.history.shift();
                     }
                     cm.historyIndex = cm.history.length;
+                    editor.currentLine = undefined;
                     cm.busy = false;
                 }
                 
                 return true;
             },
             "Up": function (cm) {
+                if (editor.currentLine === undefined) editor.currentLine = editor.getValue();
                 var index =  cm.historyIndex - 1;
                 if (index >= 0 && index < cm.history.length) {
                     cm.setValue(cm.history[index]);
@@ -88,8 +90,9 @@ function createREPL(node) {
                     cm.setValue(cm.history[index]);
                     cm.historyIndex = index;
                 } else {
-                    cm.setValue("");
+                    cm.setValue(editor.currentLine);
                     cm.historyIndex = cm.history.length;
+                    editor.currentLine = undefined;
                 }
                 return true;
             }
@@ -105,6 +108,7 @@ function createREPL(node) {
     editor.history = [];
     editor.historySize = 100; // TODO: make this configurable
     editor.historyIndex = 0;
+    editor.currentLine = undefined;
     editor.busy = false;
     return editor;
 }
