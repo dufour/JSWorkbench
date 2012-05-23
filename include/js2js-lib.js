@@ -2328,7 +2328,7 @@ function instrument_js(sourceCode, options)
             ((options["filename"]) = "<unknown>");
         }
         (port = new String_input_port(sourceCode, (options["filename"])));
-        return instrument_port(port);
+        return instrument_port(port, options);
     }
 function instrument_port(port, options)
     {
@@ -3635,6 +3635,112 @@ function Location(filename, start_pos, end_pos)
         ((exports["position_to_line"]) = position_to_line);
         ((exports["position_to_column"]) = position_to_column);
         ((exports["line_and_column_to_position"]) = line_and_column_to_position);
+        ((exports["Token"]) = Token);
+        ((exports["EOI_CAT"]) = EOI_CAT);
+        ((exports["error_CAT"]) = error_CAT);
+        ((exports["AUTOSEMICOLON_CAT"]) = AUTOSEMICOLON_CAT);
+        ((exports["NULL_CAT"]) = NULL_CAT);
+        ((exports["TRUE_CAT"]) = TRUE_CAT);
+        ((exports["FALSE_CAT"]) = FALSE_CAT);
+        ((exports["BREAK_CAT"]) = BREAK_CAT);
+        ((exports["CASE_CAT"]) = CASE_CAT);
+        ((exports["DEFAULT_CAT"]) = DEFAULT_CAT);
+        ((exports["FOR_CAT"]) = FOR_CAT);
+        ((exports["NEW_CAT"]) = NEW_CAT);
+        ((exports["VAR_CAT"]) = VAR_CAT);
+        ((exports["CONST_CAT"]) = CONST_CAT);
+        ((exports["CONTINUE_CAT"]) = CONTINUE_CAT);
+        ((exports["FUNCTION_CAT"]) = FUNCTION_CAT);
+        ((exports["RETURN_CAT"]) = RETURN_CAT);
+        ((exports["VOID_CAT"]) = VOID_CAT);
+        ((exports["DELETE_CAT"]) = DELETE_CAT);
+        ((exports["IF_CAT"]) = IF_CAT);
+        ((exports["THIS_CAT"]) = THIS_CAT);
+        ((exports["DO_CAT"]) = DO_CAT);
+        ((exports["WHILE_CAT"]) = WHILE_CAT);
+        ((exports["IN_CAT"]) = IN_CAT);
+        ((exports["INSTANCEOF_CAT"]) = INSTANCEOF_CAT);
+        ((exports["TYPEOF_CAT"]) = TYPEOF_CAT);
+        ((exports["SWITCH_CAT"]) = SWITCH_CAT);
+        ((exports["WITH_CAT"]) = WITH_CAT);
+        ((exports["RESERVED_CAT"]) = RESERVED_CAT);
+        ((exports["THROW_CAT"]) = THROW_CAT);
+        ((exports["TRY_CAT"]) = TRY_CAT);
+        ((exports["CATCH_CAT"]) = CATCH_CAT);
+        ((exports["FINALLY_CAT"]) = FINALLY_CAT);
+        ((exports["DEBUGGER_CAT"]) = DEBUGGER_CAT);
+        ((exports["ATOMIC_CAT"]) = ATOMIC_CAT);
+        ((exports["FUTURE_CAT"]) = FUTURE_CAT);
+        ((exports["EQEQ_CAT"]) = EQEQ_CAT);
+        ((exports["NE_CAT"]) = NE_CAT);
+        ((exports["STREQ_CAT"]) = STREQ_CAT);
+        ((exports["STRNEQ_CAT"]) = STRNEQ_CAT);
+        ((exports["LE_CAT"]) = LE_CAT);
+        ((exports["GE_CAT"]) = GE_CAT);
+        ((exports["OR_CAT"]) = OR_CAT);
+        ((exports["AND_CAT"]) = AND_CAT);
+        ((exports["PLUSPLUS_CAT"]) = PLUSPLUS_CAT);
+        ((exports["MINUSMINUS_CAT"]) = MINUSMINUS_CAT);
+        ((exports["LSHIFT_CAT"]) = LSHIFT_CAT);
+        ((exports["RSHIFT_CAT"]) = RSHIFT_CAT);
+        ((exports["URSHIFT_CAT"]) = URSHIFT_CAT);
+        ((exports["PLUSEQUAL_CAT"]) = PLUSEQUAL_CAT);
+        ((exports["MINUSEQUAL_CAT"]) = MINUSEQUAL_CAT);
+        ((exports["MULTEQUAL_CAT"]) = MULTEQUAL_CAT);
+        ((exports["DIVEQUAL_CAT"]) = DIVEQUAL_CAT);
+        ((exports["LSHIFTEQUAL_CAT"]) = LSHIFTEQUAL_CAT);
+        ((exports["RSHIFTEQUAL_CAT"]) = RSHIFTEQUAL_CAT);
+        ((exports["URSHIFTEQUAL_CAT"]) = URSHIFTEQUAL_CAT);
+        ((exports["BITANDEQUAL_CAT"]) = BITANDEQUAL_CAT);
+        ((exports["MODEQUAL_CAT"]) = MODEQUAL_CAT);
+        ((exports["BITXOREQUAL_CAT"]) = BITXOREQUAL_CAT);
+        ((exports["BITOREQUAL_CAT"]) = BITOREQUAL_CAT);
+        ((exports["LBRACE_CAT"]) = LBRACE_CAT);
+        ((exports["RBRACE_CAT"]) = RBRACE_CAT);
+        ((exports["NUMBER_CAT"]) = NUMBER_CAT);
+        ((exports["IDENT_CAT"]) = IDENT_CAT);
+        ((exports["STRING_CAT"]) = STRING_CAT);
+        ((exports["AUTOPLUSPLUS_CAT"]) = AUTOPLUSPLUS_CAT);
+        ((exports["AUTOMINUSMINUS_CAT"]) = AUTOMINUSMINUS_CAT);
+        ((exports["CLASS_CAT"]) = CLASS_CAT);
+        ((exports["ENUM_CAT"]) = ENUM_CAT);
+        ((exports["EXPORT_CAT"]) = EXPORT_CAT);
+        ((exports["EXTENDS_CAT"]) = EXTENDS_CAT);
+        ((exports["IMPORT_CAT"]) = IMPORT_CAT);
+        ((exports["SUPER_CAT"]) = SUPER_CAT);
+        ((exports["IMPLEMENTS_CAT"]) = IMPLEMENTS_CAT);
+        ((exports["INTERFACE_CAT"]) = INTERFACE_CAT);
+        ((exports["LET_CAT"]) = LET_CAT);
+        ((exports["PACKAGE_CAT"]) = PACKAGE_CAT);
+        ((exports["PRIVATE_CAT"]) = PRIVATE_CAT);
+        ((exports["PROTECTED_CAT"]) = PROTECTED_CAT);
+        ((exports["PUBLIC_CAT"]) = PUBLIC_CAT);
+        ((exports["STATIC_CAT"]) = STATIC_CAT);
+        ((exports["YIELD_CAT"]) = YIELD_CAT);
+        ((exports["PLUS_CAT"]) = PLUS_CAT);
+        ((exports["LPAREN_CAT"]) = LPAREN_CAT);
+        ((exports["EQUAL_CAT"]) = EQUAL_CAT);
+        ((exports["LT_CAT"]) = LT_CAT);
+        ((exports["COLON_CAT"]) = COLON_CAT);
+        ((exports["BITOR_CAT"]) = BITOR_CAT);
+        ((exports["EXCL_CAT"]) = EXCL_CAT);
+        ((exports["LBRACK_CAT"]) = LBRACK_CAT);
+        ((exports["RBRACK_CAT"]) = RBRACK_CAT);
+        ((exports["DIV_CAT"]) = DIV_CAT);
+        ((exports["MINUS_CAT"]) = MINUS_CAT);
+        ((exports["COMMA_CAT"]) = COMMA_CAT);
+        ((exports["MULT_CAT"]) = MULT_CAT);
+        ((exports["RPAREN_CAT"]) = RPAREN_CAT);
+        ((exports["GT_CAT"]) = GT_CAT);
+        ((exports["BITAND_CAT"]) = BITAND_CAT);
+        ((exports["BITNOT_CAT"]) = BITNOT_CAT);
+        ((exports["QUESTION_CAT"]) = QUESTION_CAT);
+        ((exports["SEMICOLON_CAT"]) = SEMICOLON_CAT);
+        ((exports["BITXOR_CAT"]) = BITXOR_CAT);
+        ((exports["MOD_CAT"]) = MOD_CAT);
+        ((exports["PERIOD_CAT"]) = PERIOD_CAT);
+        ((exports["ELSE_CAT"]) = ELSE_CAT);
+        ((exports["IF_WITHOUT_ELSE_CAT"]) = IF_WITHOUT_ELSE_CAT);
     }
 function Parser(scanner, warnings, params)
     {
@@ -8914,7 +9020,7 @@ function pp_id(id, indent, label)
     }
 function pp_loc(loc, line)
     {
-        print(((((line + pp_spaces((48 - (line["length"])))) + "  (") + (loc?(loc["to_string"])():"?")) + ":)"));
+        print(((((line + pp_spaces((48 - (line["length"])))) + "  (") + (loc["to_string"])()) + ":)"));
     }
 function pp_asts(indent, label, asts)
     {
@@ -9356,88 +9462,89 @@ function ast_to_js(ast, ctx)
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    if ((ast instanceof DebuggerStatement))
+                                                                                    if ((ast instanceof VariableStatement))
                                                                                     {
                                                                                         js_indent(ctx);
-                                                                                        js_out("debugger\n", ctx);
+                                                                                        js_out("var ", ctx);
+                                                                                        for ((i = 0); (i < ((ast["decls"])["length"])); (i ++))
+                                                                                        {
+                                                                                            if ((i > 0))
+                                                                                            {
+                                                                                                js_out(", ", ctx);
+                                                                                            }
+                                                                                            ast_to_js(((ast["decls"])[i]), ctx);
+                                                                                        }
+                                                                                        js_out(";\n", ctx);
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        if ((ast instanceof OpExpr))
+                                                                                        if ((ast instanceof DebuggerStatement))
                                                                                         {
-                                                                                            js_out("(", ctx);
-                                                                                            if (((ast["op"]) === "x ? y : z"))
-                                                                                            {
-                                                                                                ast_to_js(((ast["exprs"])[0]), ctx);
-                                                                                                js_out("?", ctx);
-                                                                                                ast_to_js(((ast["exprs"])[1]), ctx);
-                                                                                                js_out(":", ctx);
-                                                                                                ast_to_js(((ast["exprs"])[2]), ctx);
-                                                                                            }
-                                                                                            else
-                                                                                            {
-                                                                                                if (((ast["op"]) === "x [ y ]"))
-                                                                                                {
-                                                                                                    ast_to_js(((ast["exprs"])[0]), ctx);
-                                                                                                    js_out("[", ctx);
-                                                                                                    ast_to_js(((ast["exprs"])[1]), ctx);
-                                                                                                    js_out("]", ctx);
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                    (len = ((ast["op"])["length"]));
-                                                                                                    (last = ((ast["op"])["charAt"])((len - 1)));
-                                                                                                    if ((last === "y"))
-                                                                                                    {
-                                                                                                        ast_to_js(((ast["exprs"])[0]), ctx);
-                                                                                                        js_out(((ast["op"])["substring"])(1, (len - 1)), ctx);
-                                                                                                        ast_to_js(((ast["exprs"])[1]), ctx);
-                                                                                                    }
-                                                                                                    else
-                                                                                                    {
-                                                                                                        if ((last === "x"))
-                                                                                                        {
-                                                                                                            js_out(((ast["op"])["substring"])(0, (len - 1)), ctx);
-                                                                                                            ast_to_js(((ast["exprs"])[0]), ctx);
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                            if ((((ast["op"])["charAt"])(0) === "x"))
-                                                                                                            {
-                                                                                                                ast_to_js(((ast["exprs"])[0]), ctx);
-                                                                                                                js_out(((ast["op"])["substring"])(1, len), ctx);
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                error(("unknown op " + (ast["op"])));
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-                                                                                            js_out(")", ctx);
+                                                                                            js_indent(ctx);
+                                                                                            js_out("debugger\n", ctx);
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            if ((ast instanceof NewExpr))
+                                                                                            if ((ast instanceof OpExpr))
                                                                                             {
-                                                                                                js_out("new ", ctx);
-                                                                                                ast_to_js((ast["expr"]), ctx);
                                                                                                 js_out("(", ctx);
-                                                                                                (sep = "");
-                                                                                                for ((i = 0); (i < ((ast["args"])["length"])); (i ++))
+                                                                                                if (((ast["op"]) === "x ? y : z"))
                                                                                                 {
-                                                                                                    js_out(sep, ctx);
-                                                                                                    ast_to_js(((ast["args"])[i]), ctx);
-                                                                                                    (sep = ", ");
+                                                                                                    ast_to_js(((ast["exprs"])[0]), ctx);
+                                                                                                    js_out("?", ctx);
+                                                                                                    ast_to_js(((ast["exprs"])[1]), ctx);
+                                                                                                    js_out(":", ctx);
+                                                                                                    ast_to_js(((ast["exprs"])[2]), ctx);
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    if (((ast["op"]) === "x [ y ]"))
+                                                                                                    {
+                                                                                                        ast_to_js(((ast["exprs"])[0]), ctx);
+                                                                                                        js_out("[", ctx);
+                                                                                                        ast_to_js(((ast["exprs"])[1]), ctx);
+                                                                                                        js_out("]", ctx);
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        (len = ((ast["op"])["length"]));
+                                                                                                        (last = ((ast["op"])["charAt"])((len - 1)));
+                                                                                                        if ((last === "y"))
+                                                                                                        {
+                                                                                                            ast_to_js(((ast["exprs"])[0]), ctx);
+                                                                                                            js_out(((ast["op"])["substring"])(1, (len - 1)), ctx);
+                                                                                                            ast_to_js(((ast["exprs"])[1]), ctx);
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            if ((last === "x"))
+                                                                                                            {
+                                                                                                                js_out(((ast["op"])["substring"])(0, (len - 1)), ctx);
+                                                                                                                ast_to_js(((ast["exprs"])[0]), ctx);
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                if ((((ast["op"])["charAt"])(0) === "x"))
+                                                                                                                {
+                                                                                                                    ast_to_js(((ast["exprs"])[0]), ctx);
+                                                                                                                    js_out(((ast["op"])["substring"])(1, len), ctx);
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    error(("unknown op " + (ast["op"])));
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
                                                                                                 }
                                                                                                 js_out(")", ctx);
                                                                                             }
                                                                                             else
                                                                                             {
-                                                                                                if ((ast instanceof CallExpr))
+                                                                                                if ((ast instanceof NewExpr))
                                                                                                 {
-                                                                                                    ast_to_js((ast["fn"]), ctx);
+                                                                                                    js_out("new ", ctx);
+                                                                                                    ast_to_js((ast["expr"]), ctx);
                                                                                                     js_out("(", ctx);
                                                                                                     (sep = "");
                                                                                                     for ((i = 0); (i < ((ast["args"])["length"])); (i ++))
@@ -9450,95 +9557,123 @@ function ast_to_js(ast, ctx)
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                    if ((ast instanceof FunctionExpr))
+                                                                                                    if ((ast instanceof CallExpr))
                                                                                                     {
+                                                                                                        ast_to_js((ast["fn"]), ctx);
                                                                                                         js_out("(", ctx);
-                                                                                                        function_to_js(ast, null, ctx);
+                                                                                                        (sep = "");
+                                                                                                        for ((i = 0); (i < ((ast["args"])["length"])); (i ++))
+                                                                                                        {
+                                                                                                            js_out(sep, ctx);
+                                                                                                            ast_to_js(((ast["args"])[i]), ctx);
+                                                                                                            (sep = ", ");
+                                                                                                        }
                                                                                                         js_out(")", ctx);
                                                                                                     }
                                                                                                     else
                                                                                                     {
-                                                                                                        if ((ast instanceof Literal))
+                                                                                                        if ((ast instanceof FunctionExpr))
                                                                                                         {
-                                                                                                            (val = (ast["value"]));
-                                                                                                            if ((val === null))
-                                                                                                            {
-                                                                                                                (str = "null");
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                if (((typeof val) === "string"))
-                                                                                                                {
-                                                                                                                    (str = js_unparse_string(val));
-                                                                                                                }
-                                                                                                                else
-                                                                                                                {
-                                                                                                                    if (num_instance(val))
-                                                                                                                    {
-                                                                                                                        (str = num_to_string(val, 10));
-                                                                                                                    }
-                                                                                                                    else
-                                                                                                                    {
-                                                                                                                        (str = ((ast["value"])["toString"])());
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            }
-                                                                                                            js_out(str, ctx);
+                                                                                                            js_out("(", ctx);
+                                                                                                            function_to_js(ast, null, ctx);
+                                                                                                            js_out(")", ctx);
                                                                                                         }
                                                                                                         else
                                                                                                         {
-                                                                                                            if ((ast instanceof ArrayLiteral))
+                                                                                                            if ((ast instanceof Literal))
                                                                                                             {
-                                                                                                                js_out("[", ctx);
-                                                                                                                (sep = "");
-                                                                                                                for ((i = 0); (i < ((ast["exprs"])["length"])); (i ++))
+                                                                                                                (val = (ast["value"]));
+                                                                                                                if ((val === null))
                                                                                                                 {
-                                                                                                                    js_out(sep, ctx);
-                                                                                                                    if ((((ast["exprs"])[i]) !== null))
-                                                                                                                    {
-                                                                                                                        ast_to_js(((ast["exprs"])[i]), ctx);
-                                                                                                                    }
-                                                                                                                    (sep = ", ");
-                                                                                                                }
-                                                                                                                js_out("]", ctx);
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                if ((ast instanceof ObjectLiteral))
-                                                                                                                {
-                                                                                                                    js_out("{", ctx);
-                                                                                                                    (sep = "");
-                                                                                                                    for ((i = 0); (i < ((ast["properties"])["length"])); (i ++))
-                                                                                                                    {
-                                                                                                                        js_out(sep, ctx);
-                                                                                                                        ast_to_js((((ast["properties"])[i])["name"]), ctx);
-                                                                                                                        js_out(": ", ctx);
-                                                                                                                        ast_to_js((((ast["properties"])[i])["value"]), ctx);
-                                                                                                                        (sep = ", ");
-                                                                                                                    }
-                                                                                                                    js_out("}", ctx);
+                                                                                                                    (str = "null");
                                                                                                                 }
                                                                                                                 else
                                                                                                                 {
-                                                                                                                    if ((ast instanceof RegExpLiteral))
+                                                                                                                    if (((typeof val) === "string"))
                                                                                                                     {
-                                                                                                                        js_out((ast["regexp"]), ctx);
+                                                                                                                        (str = js_unparse_string(val));
                                                                                                                     }
                                                                                                                     else
                                                                                                                     {
-                                                                                                                        if ((ast instanceof Ref))
+                                                                                                                        if (num_instance(val))
                                                                                                                         {
-                                                                                                                            js_out(js_id_to_js(((ast["id"])["toString"])()), ctx);
+                                                                                                                            (str = num_to_string(val, 10));
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                            if ((ast instanceof This))
+                                                                                                                            (str = ((ast["value"])["toString"])());
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                js_out(str, ctx);
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                if ((ast instanceof ArrayLiteral))
+                                                                                                                {
+                                                                                                                    js_out("[", ctx);
+                                                                                                                    (sep = "");
+                                                                                                                    for ((i = 0); (i < ((ast["exprs"])["length"])); (i ++))
+                                                                                                                    {
+                                                                                                                        js_out(sep, ctx);
+                                                                                                                        if ((((ast["exprs"])[i]) !== null))
+                                                                                                                        {
+                                                                                                                            ast_to_js(((ast["exprs"])[i]), ctx);
+                                                                                                                        }
+                                                                                                                        (sep = ", ");
+                                                                                                                    }
+                                                                                                                    js_out("]", ctx);
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    if ((ast instanceof ObjectLiteral))
+                                                                                                                    {
+                                                                                                                        js_out("{", ctx);
+                                                                                                                        (sep = "");
+                                                                                                                        for ((i = 0); (i < ((ast["properties"])["length"])); (i ++))
+                                                                                                                        {
+                                                                                                                            js_out(sep, ctx);
+                                                                                                                            ast_to_js((((ast["properties"])[i])["name"]), ctx);
+                                                                                                                            js_out(": ", ctx);
+                                                                                                                            ast_to_js((((ast["properties"])[i])["value"]), ctx);
+                                                                                                                            (sep = ", ");
+                                                                                                                        }
+                                                                                                                        js_out("}", ctx);
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        if ((ast instanceof RegExpLiteral))
+                                                                                                                        {
+                                                                                                                            js_out((ast["regexp"]), ctx);
+                                                                                                                        }
+                                                                                                                        else
+                                                                                                                        {
+                                                                                                                            if ((ast instanceof Ref))
                                                                                                                             {
-                                                                                                                                js_out("this", ctx);
+                                                                                                                                js_out(js_id_to_js(((ast["id"])["toString"])()), ctx);
                                                                                                                             }
                                                                                                                             else
                                                                                                                             {
-                                                                                                                                error("UNKNOWN AST");
+                                                                                                                                if ((ast instanceof This))
+                                                                                                                                {
+                                                                                                                                    js_out("this", ctx);
+                                                                                                                                }
+                                                                                                                                else
+                                                                                                                                {
+                                                                                                                                    if ((ast instanceof Decl))
+                                                                                                                                    {
+                                                                                                                                        js_out(js_id_to_js(((ast["id"])["toString"])()), ctx);
+                                                                                                                                        if ((ast["initializer"]))
+                                                                                                                                        {
+                                                                                                                                            js_out("=", ctx);
+                                                                                                                                            ast_to_js((ast["initializer"]), ctx);
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                    else
+                                                                                                                                    {
+                                                                                                                                        error("UNKNOWN AST");
+                                                                                                                                    }
+                                                                                                                                }
                                                                                                                             }
                                                                                                                         }
                                                                                                                     }
@@ -11515,8 +11650,8 @@ function module_wrapper_pass(ast, options)
         if ((options["module"]))
         {
             (statements = ((ast["block"])["statements"]));
-            (param_id = new Token(IDENT_CAT, "exports", null));
-            (fn_expr = new FunctionExpr(null, null, [param_id], statements));
+            (param_id = new Token(IDENT_CAT, "exports", (ast["loc"])));
+            (fn_expr = new FunctionExpr((ast["loc"]), null, [param_id], statements));
             ((fn_expr["vars"]) = (ast["vars"]));
             ((ast["vars"]) = null);
             for (v in (fn_expr["vars"]))
@@ -11526,12 +11661,12 @@ function module_wrapper_pass(ast, options)
                     (delete ((fn_expr["vars"])[v]));
                 }
             }
-            (empty_obj = new ObjectLiteral(null, []));
-            (module_name = new OpExpr(null, "x [ y ]", [new This(null), new Literal(null, (options["module"]))]));
-            (assignment = new OpExpr(null, "x = y", [module_name, empty_obj]));
+            (empty_obj = new ObjectLiteral((ast["loc"]), []));
+            (module_name = new OpExpr((ast["loc"]), "x [ y ]", [new This((ast["loc"])), new Literal((ast["loc"]), (options["module"]))]));
+            (assignment = new OpExpr((ast["loc"]), "x = y", [module_name, empty_obj]));
             (args = [assignment]);
-            (call_expr = new CallExpr(null, fn_expr, args));
-            (((ast["block"])["statements"]) = [new ExprStatement(null, call_expr)]);
+            (call_expr = new CallExpr((ast["loc"]), fn_expr, args));
+            (((ast["block"])["statements"]) = [new ExprStatement((ast["loc"]), call_expr)]);
         }
     }
 function ast_normalize(ast, options)
@@ -11589,4 +11724,8 @@ function ast_normalize(ast, options)
         ((exports["ast_normalize"]) = ast_normalize);
     }
 })(((this["js2js"]) = {}));
-
+if (typeof "exports" !== undefined) {
+    for (var key in this.js2js) {
+        exports[key] = this.js2js[key];
+    }
+}
