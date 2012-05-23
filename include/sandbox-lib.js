@@ -44,11 +44,36 @@ function sandbox$propGet(propName) {
     throw new Error("Ungarded use of sandbox$propGet");
 }
 
-function sandbox$propSet(propName, val) {
+function sandbox$propSet(op, propName, val) {
     for (var i = sandbox$withScope.length - 1; i >= 0; i--) {
         var obj = sandbox$withScope[i];
         if (Object.prototype.hasOwnProperty.call(obj, propName)) {
-            return obj[propName] = val;
+            switch (op) {      // TODO: split into specialized functions
+                case "x = y":
+                    return obj[propName] = val;
+                case "x += y":
+                    return obj[propName] += val;
+                case "x -= y":
+                    return obj[propName] -= val;
+                case "x *= y":
+                    return obj[propName] *= val;
+                case "x /= y":
+                    return obj[propName] /= val;
+                case "x <<= y":
+                    return obj[propName] <<= val;
+                case "x >>= y":
+                    return obj[propName] >>= val;
+                case "x >>>= y":
+                    return obj[propName] >>>= val;
+                case "x &= y":
+                    return obj[propName] &= val;
+                case "x ^= y":
+                    return obj[propName] ^= val;
+                case "x |= y":
+                    return obj[propName] |= val;
+                case "x %= y":
+                    return obj[propName] %= val;
+            }
         }
     }
 

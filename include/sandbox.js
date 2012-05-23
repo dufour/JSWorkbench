@@ -31,6 +31,10 @@ ASTGen.prototype.newRef = function (id) {
     return new js2js.Ref(this.loc, id);
 };
 
+ASTGen.prototype.stringLiteral = function (val) {
+    return new js2js.Literal(this.loc, val)
+};
+
 ASTGen.prototype.newGetProp = function (obj, prop) {
     return new js2js.OpExpr(this.loc, "x [ y ]", [obj, prop]);
 };
@@ -125,31 +129,25 @@ with_removal_ctx.prototype.walk_statement = function (ast) {
     }
 }
 
-with_removal_ctx.prototype.isSelfID = function (id) {
-    return id.toString().slice(0, 8) === "sandbox$";
-}
-
 with_removal_ctx.prototype.walk_expr = function (ast) {
     if (this.withStatements.length > 0) {
         if (ast instanceof js2js.Ref) {
             ast = js2js.ast_walk_expr(ast, this);
-            if (!this.isSelfID(ast.id)) {
-                var gen = new ASTGen(ast.loc);
-                return new js2js.OpExpr(ast.loc, "x ? y : z", [
-                    gen.newCall("sandbox$withScopeContains", [new js2js.Literal(ast.loc, ast.id.toString())]),
-                    gen.newCall("sandbox$propGet", [new js2js.Literal(ast.loc, ast.id.toString())]),
-                    ast
-                ]);
-            }
+            var gen = new ASTGen(ast.loc);
+            return new js2js.OpExpr(ast.loc, "x ? y : z", [
+                gen.newCall("sandbox$withScopeContains", [gen.stringLiteral(ast.id.toString())]),
+                gen.newCall("sandbox$propGet", [gen.stringLiteral(ast.id.toString())]),
+                ast
+            ]);
         } else if (is_assignment(ast)) {
             var lhs = ast.exprs[0];
-            if (lhs instanceof js2js.Ref && !this.isSelfID(lhs.id)) {
+            if (lhs instanceof js2js.Ref) {
                 var rhs = this.walk_expr(ast.exprs[1], this);
                 var gen = new ASTGen(ast.loc);
 
                 return new js2js.OpExpr(ast.loc, "x ? y : z", [
-                    gen.newCall("sandbox$withScopeContains", [new js2js.Literal(ast.loc, lhs.id.toString())]),
-                    gen.newCall("sandbox$propSet", [new js2js.Literal(ast.loc, lhs.id.toString()), rhs]),
+                    gen.newCall("sandbox$withScopeContains", [gen.stringLiteral(lhs.id.toString())]),
+                    gen.newCall("sandbox$propSet", [gen.stringLiteral(ast.op), gen.stringLiteral(lhs.id.toString()), rhs]),
                     new js2js.OpExpr(ast.loc, ast.op, [lhs, rhs]) // TODO: clone rhs to avoid potential problems with shared nodes?
                 ]);
             }
